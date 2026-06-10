@@ -338,7 +338,7 @@
   /* ---------------- Audio: looping background track + soft chimes ---------------- */
   class AudioEngine {
     constructor() {
-      this.ctx = null; this.master = null; this.enabled = true; this.volume = 0.6; this.active = false; this._fade = null;
+      this.ctx = null; this.master = null; this.enabled = true; this.volume = 0.6; this.active = false; this._fade = null; this._stopTimer = null;
       this.music = new Audio("background.mp3");
       this.music.loop = true; this.music.preload = "auto"; this.music.volume = 0;
     }
@@ -365,12 +365,18 @@
     start() {
       this.ensureCtx();
       if (this.ctx.state === "suspended") this.ctx.resume();
+      if (this._stopTimer) { clearTimeout(this._stopTimer); this._stopTimer = null; }
       this.active = true;
       if (this.enabled) { try { this.music.currentTime = 0; } catch (e) {} this._play(); this._fadeMusic(this.volume, 1600); }
     }
     suspend() { this._fadeMusic(0, 250); setTimeout(() => { try { this.music.pause(); } catch (e) {} }, 260); if (this.ctx) return this.ctx.suspend(); }
     resume() { if (this.active && this.enabled) { this._play(); this._fadeMusic(this.volume, 500); } if (this.ctx) return this.ctx.resume(); }
-    stop() { this.active = false; this._fadeMusic(0, 900); setTimeout(() => { try { this.music.pause(); this.music.currentTime = 0; } catch (e) {} }, 950); }
+    stop(fadeMs = 900) {
+      this.active = false;
+      if (this._stopTimer) { clearTimeout(this._stopTimer); this._stopTimer = null; }
+      this._fadeMusic(0, fadeMs);
+      this._stopTimer = setTimeout(() => { try { this.music.pause(); this.music.currentTime = 0; } catch (e) {} this._stopTimer = null; }, fadeMs + 100);
+    }
     setEnabled(b) {
       this.enabled = b;
       if (this.master) this.master.gain.setTargetAtTime(b ? this.volume : 0, this.ctx.currentTime, 0.05);
@@ -564,7 +570,7 @@
       if (status === "stop") { running=false; audio.stop(); return; }
     }
     [...$("dots").children].forEach((d)=>d.className="dot done");
-    audio.stop();
+    audio.stop(3000);
     running=false; show("done");
   }
 
