@@ -79,11 +79,6 @@
       0 0 30px 2px color-mix(in srgb, var(--glow) 45%, transparent),
       inset 0 0 60px color-mix(in srgb, var(--c2) 60%, transparent);
   }
-  .orb-ring {
-    position: absolute; width: min(340px, 84vmin); aspect-ratio: 1; border-radius: 50%;
-    border: 1px solid color-mix(in srgb, var(--glow) 22%, transparent); opacity: .5;
-  }
-
   /* ---------- icon buttons ---------- */
   .icon-btn {
     position: absolute; top: calc(18px + var(--safe-t)); width: 48px; height: 48px; border-radius: 50%;
@@ -98,17 +93,7 @@
   /* ======================= HOME ======================= */
   #home { justify-content: center; gap: clamp(18px, 3.5vh, 34px); }
   .home-inner { display: flex; flex-direction: column; align-items: center; gap: clamp(20px, 3.4vh, 36px); width: min(560px, 100%); }
-  .home-elements { display: flex; gap: clamp(8px, 2.6vw, 20px); align-items: center; justify-content: center; }
-  .he-orb {
-    width: clamp(48px, 15.5vw, 76px); aspect-ratio: 1; border-radius: 50%;
-    display: grid; place-items: center; flex: 0 0 auto;
-    background: radial-gradient(circle at 38% 30%,
-      color-mix(in srgb, var(--eglow) 88%, #fff 12%) 0%,
-      color-mix(in srgb, var(--ec1) 82%, #000 8%) 70%,
-      color-mix(in srgb, var(--ec2) 90%, #000 12%) 100%);
-    box-shadow: 0 0 22px 1px color-mix(in srgb, var(--eglow) 46%, transparent), inset 0 0 16px color-mix(in srgb, var(--ec2) 55%, transparent);
-  }
-  .he-orb svg { width: 46%; height: 46%; color: rgba(255,255,255,.96); filter: drop-shadow(0 1px 4px rgba(0,0,0,.4)); }
+  .home-heart { width: clamp(230px, 72vw, 380px); height: auto; display: block; filter: drop-shadow(0 0 16px rgba(224,181,79,.22)); }
 
   .home-title { font-family: var(--ui-serif); font-weight: 500; font-size: clamp(30px, 7vw, 52px); line-height: 1.06; text-align: center; letter-spacing: .015em; }
 
@@ -163,6 +148,8 @@
   .vol-wrap svg { width: 18px; height: 18px; color: var(--muted); flex: 0 0 auto; }
 
   .settings-done { display: block; margin: 32px auto 0; }
+  .reset-btn { display: block; margin: 16px auto 0; background: none; border: none; cursor: pointer; color: var(--muted); font-family: var(--ui-serif); font-style: italic; font-size: 15px; letter-spacing: .02em; text-decoration: underline; text-underline-offset: 3px; transition: color .2s; }
+  .reset-btn:hover { color: var(--fg); }
   .btn-ghost { font-size: 15px; letter-spacing: .03em; padding: 13px 34px; border-radius: 40px; cursor: pointer; color: var(--fg); background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.16); transition: background .2s, transform .15s; }
   .btn-ghost:hover { background: rgba(255,255,255,.12); transform: translateY(-1px); }
   .btn-ghost.accent { background: var(--glow); color: #0a0b10; border-color: transparent; font-weight: 600; }
@@ -217,7 +204,7 @@
     </button>
 
     <div class="home-inner">
-      <div class="home-elements" id="homeElements"></div>
+      <img class="home-heart" src="sufiheart.png" alt="Sufi winged heart" />
       <h1 class="home-title">Sufi Elemental<br>Breathing</h1>
       <button class="btn-primary" id="startBtn">Begin</button>
       <div class="home-est" id="homeEst"></div>
@@ -277,6 +264,7 @@
 
       <div class="settings-tag" style="margin:24px 0 0;">Approx. <b id="estTime" style="color:var(--fg)">2:40</b> &middot; <span id="estDetail">5 elements</span></div>
       <button class="btn-ghost accent settings-done" id="doneSettingsBtn">Done</button>
+      <button class="reset-btn" id="resetBtn">Reset to defaults</button>
     </div>
   </section>
 
@@ -288,7 +276,6 @@
       <div class="elem-name" id="elemName">Earth</div>
     </div>
     <div class="orb-stage">
-      <div class="orb-ring"></div>
       <div id="orb" class="orb"></div>
       <div id="orbIcon"></div>
     </div>
@@ -424,10 +411,7 @@
   function applyTheme(el) { app.style.setProperty("--c1", el.c1); app.style.setProperty("--c2", el.c2); app.style.setProperty("--glow", el.glow); }
   function show(name) { Object.values(screens).forEach((s) => s.classList.remove("active")); screens[name].classList.add("active"); }
 
-  /* ---------------- Home: the five elements ---------------- */
-  $("homeElements").innerHTML = ELEMENTS.map((e) =>
-    `<div class="he-orb" style="--ec1:${e.c1};--ec2:${e.c2};--eglow:${e.glow}" title="${e.name}">${ICONS[e.id]}</div>`
-  ).join("");
+  /* ---------------- Home ---------------- */
   const HOME_THEME = { c1:"#414a5e", c2:"#15181f", glow:"#828ea8" };
   function applyHomeTheme() { applyTheme(HOME_THEME); }
 
@@ -478,6 +462,15 @@
   $("soundToggle").addEventListener("change", (e) => { setMusic(e.target.checked); saveSettings(); });
   $("musicBtn").addEventListener("click", () => { setMusic(!$("soundToggle").checked); saveSettings(); });
   sliders.volume.addEventListener("input", (e) => { audio.setVolume(e.target.value/100); saveSettings(); });
+  function resetDefaults() {
+    sliders.breaths.value = 5;
+    sliders.inhale.value = 4; sliders.exhale.value = 4;
+    sliders.holdIn.value = 0; sliders.holdOut.value = 0;
+    sliders.pace.value = 8; sliders.volume.value = 60;
+    audio.setVolume(0.6); setMusic(true);
+    fmtVal(); updateEstimate(); saveSettings();
+  }
+  $("resetBtn").addEventListener("click", resetDefaults);
 
   function readConfig() {
     return {

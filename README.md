@@ -20,8 +20,8 @@ Each element has its own traditional breath method (5 breaths each) and a color 
 
 ## Features
 
-- **Minimal home** showing the five elements as colored orbs, a large *Begin* button, and an always-visible **music toggle**
-- **Settings page** (⚙) for the rhythm: breaths per element (default 5, range 1–20), breath length, independent inhale / exhale durations, optional holds, and volume
+- **Minimal home** with a gold Sufi winged-heart emblem, a large *Begin* button, and an always-visible **music toggle**
+- **Settings page** (⚙) for the rhythm: breaths per element (default 5, range 1–20), breath length, independent inhale / exhale durations, optional holds, and volume — with a **reset to defaults**
 - **Classic alchemical element symbols** (clean vectors) on a glowing orb that breathes — expanding on the inhale, contracting on the exhale — while the symbol itself holds a constant size, themed to each element's color
 - **Illuminated design** — elegant serif type (Cormorant Garamond / EB Garamond) over a subtle Ottoman-Qur'an manuscript backdrop
 - **Background music** — a looping ambient track plays through the whole practice. A music toggle is available on the home screen **and during the session**, plus a volume control. A single chime resolves the practice at the end.
@@ -35,6 +35,7 @@ Each element has its own traditional breath method (5 breaths each) and a color 
 | `index.html` | The entire app (UI, audio engine, session logic) |
 | `background.mp3` | Looping background music |
 | `manuscript.jpg` | Subtle background image |
+| `sufiheart.png` | Home emblem (Sufi winged heart) |
 | `manifest.webmanifest` | PWA manifest |
 | `sw.js` | Service worker (offline app shell) |
 | `icon-*.png`, `apple-touch-icon.png`, `favicon-32.png` | App icons |
