@@ -138,27 +138,8 @@
   .settings-tag { text-align: center; color: var(--muted); font-size: 12.5px; letter-spacing: .06em; margin-bottom: 26px; }
   .sec-label { text-transform: uppercase; letter-spacing: .28em; font-size: 10.5px; color: var(--muted); font-weight: 600; margin: 26px 0 14px; }
 
-  .cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-  .card {
-    border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.025);
-    border-radius: 16px; padding: 13px 6px; text-align: center; cursor: pointer; user-select: none;
-    transition: border-color .25s, background .25s, transform .2s, opacity .25s; position: relative;
-  }
-  .card:hover { transform: translateY(-2px); }
-  .card .ico { width: 28px; height: 28px; margin: 0 auto 8px; color: #fff; opacity: .92; }
-  .card .nm { font-size: 12px; letter-spacing: .03em; font-weight: 600; }
-  .card .mth { font-size: 9px; color: var(--muted); margin-top: 3px; }
-  .card.off { opacity: .34; } .card.off .check { opacity: 0; }
-  .card .check { position: absolute; top: 7px; right: 7px; width: 15px; height: 15px; border-radius: 50%; background: currentColor; display: grid; place-items: center; transition: opacity .2s; }
-  .card .check svg { width: 9px; height: 9px; color: #0a0b10; }
-  .card.e-earth { color: #e0b54f; } .card.e-earth.on { border-color: rgba(224,181,79,.5); background: rgba(224,181,79,.09); }
-  .card.e-water { color: #57c46a; } .card.e-water.on { border-color: rgba(87,196,106,.5); background: rgba(87,196,106,.09); }
-  .card.e-fire  { color: #ff5236; } .card.e-fire.on  { border-color: rgba(255,82,54,.5);   background: rgba(255,82,54,.09); }
-  .card.e-air   { color: #82a9ff; } .card.e-air.on   { border-color: rgba(130,169,255,.5); background: rgba(130,169,255,.09); }
-  .card.e-ether { color: #c2cad6; } .card.e-ether.on { border-color: rgba(194,202,214,.5); background: rgba(194,202,214,.1); }
-
   .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
-  @media (max-width: 540px){ .controls-grid { grid-template-columns: 1fr; gap: 14px; } .cards { gap: 6px; } }
+  @media (max-width: 540px){ .controls-grid { grid-template-columns: 1fr; gap: 14px; } }
   .field .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
   .field label { font-size: 13.5px; letter-spacing: .02em; color: #d6dbe4; font-weight: 500; }
   .field .val { font-variant-numeric: tabular-nums; font-size: 13.5px; color: var(--fg); font-weight: 600; }
@@ -171,11 +152,6 @@
 
   .vol-wrap { display: flex; align-items: center; gap: 12px; transition: opacity .3s; }
   .vol-wrap svg { width: 18px; height: 18px; color: var(--muted); flex: 0 0 auto; }
-
-  .opt-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 12px; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.025); }
-  .opt-row .lbl { font-size: 13.5px; color: #d6dbe4; }
-  .opt-row .lbl small { display: block; color: var(--muted); font-size: 11.5px; margin-top: 4px; line-height: 1.45; max-width: 40ch; }
-  .opt-row .lbl small i { color: color-mix(in srgb, var(--glow) 65%, #fff 35%); font-style: normal; }
 
   .settings-done { display: block; margin: 32px auto 0; }
   .btn-ghost { font-size: 15px; letter-spacing: .03em; padding: 13px 34px; border-radius: 40px; cursor: pointer; color: var(--fg); background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.16); transition: background .2s, transform .15s; }
@@ -199,12 +175,9 @@
   #orbIcon svg { width: 100%; height: 100%; }
 
   .sess-bottom { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 22px; }
-  .phase { text-align: center; min-height: 116px; }
+  .phase { text-align: center; min-height: 84px; }
   .phase .word { font-family: var(--ui-serif); font-size: clamp(30px, 6vw, 44px); font-weight: 500; letter-spacing: .02em; line-height: 1.1; }
   .phase .sub { color: var(--muted); font-size: 14px; letter-spacing: .04em; margin-top: 6px; }
-  .phase .dhikr { margin-top: 12px; font-family: var(--ui-serif); font-style: italic; font-size: 21px; letter-spacing: .03em; color: color-mix(in srgb, var(--glow) 72%, #fff 28%); opacity: 0; transition: opacity .5s ease; min-height: 28px; }
-  .phase .dhikr.show { opacity: 1; }
-  .phase .dhikr small { display: block; font-style: normal; font-family: var(--ui-sans); font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
   .breath-count { font-size: 12.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted); font-variant-numeric: tabular-nums; }
 
   .sess-controls { display: flex; gap: 14px; align-items: center; }
@@ -268,9 +241,6 @@
       <div class="settings-title">Settings</div>
       <div class="settings-tag">Shape the rhythm of your practice</div>
 
-      <div class="sec-label">Elements &middot; tap to include</div>
-      <div class="cards" id="cards"></div>
-
       <div class="sec-label">Rhythm</div>
       <div class="controls-grid">
         <div class="field">
@@ -305,18 +275,6 @@
         <input type="range" id="volume" min="0" max="100" step="1" value="60" />
       </div>
 
-      <div class="sec-label">Dhikr &middot; optional</div>
-      <div class="opt-row">
-        <div class="lbl">
-          Sacred phrase with the breath
-          <small>Silently say <i>Ya Shafee</i> (the Healer) on the in-breath, and <i>Ya Kafee</i> (the Remedy) on the out-breath.</small>
-        </div>
-        <label class="sw">
-          <input type="checkbox" id="dhikr" checked />
-          <span class="track"></span><span class="knob"></span>
-        </label>
-      </div>
-
       <div class="settings-tag" style="margin:24px 0 0;">Approx. <b id="estTime" style="color:var(--fg)">2:40</b> &middot; <span id="estDetail">5 elements</span></div>
       <button class="btn-ghost accent settings-done" id="doneSettingsBtn">Done</button>
     </div>
@@ -341,7 +299,6 @@
       <div class="phase">
         <div class="word" id="phaseWord">Breathe In</div>
         <div class="sub" id="phaseSub">through the nose</div>
-        <div class="dhikr" id="phaseDhikr"></div>
       </div>
       <div class="breath-count" id="breathCount">Breath 1 of 5</div>
       <div class="sess-controls">
@@ -374,7 +331,7 @@
     water: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.4 5.2 L20.6 5.2 L12 20.2 Z"/></svg>`,
     fire: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8 L20.6 18.8 L3.4 18.8 Z"/></svg>`,
     air: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8 L20.6 18.8 L3.4 18.8 Z"/><path d="M6.3 9.4 L17.7 9.4"/></svg>`,
-    ether: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L19.8 16.5 L4.2 16.5 Z"/><path d="M12 21 L4.2 7.5 L19.8 7.5 Z"/></svg>`,
+    ether: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L19.8 16.5 L4.2 16.5 Z"/><path d="M9.4 16.5 L12 21 L14.6 16.5"/><path d="M14.6 7.5 L19.8 7.5 L17.2 12"/><path d="M6.8 12 L4.2 7.5 L9.4 7.5"/></svg>`,
     check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4 4 10-10"/></svg>`,
     soundOn: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>`,
     soundOff: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>`,
@@ -480,20 +437,6 @@
   function stopHero() { if (heroTimer) { clearInterval(heroTimer); heroTimer = null; } }
 
   /* ---------------- Settings ---------------- */
-  const selected = new Set(ELEMENTS.map((e)=>e.id));
-  const cardsEl = $("cards");
-  ELEMENTS.forEach((el) => {
-    const c = document.createElement("div");
-    c.className = `card e-${el.id} on`; c.dataset.id = el.id;
-    c.innerHTML = `<span class="check">${ICONS.check}</span><div class="ico">${ICONS[el.id]}</div><div class="nm">${el.name}</div><div class="mth">${el.short}</div>`;
-    c.addEventListener("click", () => {
-      if (selected.has(el.id)) { selected.delete(el.id); c.classList.add("off"); c.classList.remove("on"); }
-      else { selected.add(el.id); c.classList.remove("off"); c.classList.add("on"); }
-      updateEstimate(); saveSettings();
-    });
-    cardsEl.appendChild(c);
-  });
-
   const sliders = ["breaths","pace","inhale","exhale","holdIn","holdOut","volume"].reduce((a,id)=>(a[id]=$(id),a),{});
   let linkingPace = false;
 
@@ -540,29 +483,26 @@
   $("soundToggle").addEventListener("change", (e) => { setMusic(e.target.checked); saveSettings(); });
   $("musicBtn").addEventListener("click", () => { setMusic(!$("soundToggle").checked); saveSettings(); });
   sliders.volume.addEventListener("input", (e) => { audio.setVolume(e.target.value/100); saveSettings(); });
-  $("dhikr").addEventListener("change", saveSettings);
 
-  const INTRO_S = 3;
   function readConfig() {
     return {
-      elements: ELEMENTS.filter((e)=>selected.has(e.id)),
+      elements: ELEMENTS,
       breaths: parseInt(sliders.breaths.value,10),
       inhaleMs: parseFloat(sliders.inhale.value)*1000, exhaleMs: parseFloat(sliders.exhale.value)*1000,
       holdInMs: parseFloat(sliders.holdIn.value)*1000, holdOutMs: parseFloat(sliders.holdOut.value)*1000,
-      sound: $("soundToggle").checked, dhikr: $("dhikr").checked,
+      sound: $("soundToggle").checked,
     };
   }
   function updateEstimate() {
     const cfg = readConfig();
-    const per = cfg.breaths*(cfg.inhaleMs+cfg.exhaleMs+cfg.holdInMs+cfg.holdOutMs)/1000 + INTRO_S;
+    const per = cfg.breaths*(cfg.inhaleMs+cfg.exhaleMs+cfg.holdInMs+cfg.holdOutMs)/1000;
     const total = Math.round(per * cfg.elements.length);
     const m = Math.floor(total/60), s = total%60;
     const time = `${m}:${String(s).padStart(2,"0")}`;
     $("estTime").textContent = time;
     const n = cfg.elements.length;
-    $("estDetail").textContent = n===0 ? "select an element" : `${n} element${n>1?"s":""} · ${cfg.breaths} breaths each`;
-    $("homeEst").innerHTML = n===0 ? "Select an element in settings" : `${n} element${n>1?"s":""} &middot; ${cfg.breaths} breaths each &middot; <b>~${time}</b>`;
-    $("startBtn").disabled = n===0;
+    $("estDetail").textContent = `${n} elements · ${cfg.breaths} breaths each`;
+    $("homeEst").innerHTML = `${n} elements &middot; ${cfg.breaths} breaths each &middot; <b>~${time}</b>`;
   }
 
   /* ---------------- Persistence ---------------- */
@@ -571,7 +511,7 @@
       localStorage.setItem(STORE, JSON.stringify({
         breaths: sliders.breaths.value, inhale: sliders.inhale.value, exhale: sliders.exhale.value,
         holdIn: sliders.holdIn.value, holdOut: sliders.holdOut.value, volume: sliders.volume.value,
-        version: 2, sound: $("soundToggle").checked, dhikr: $("dhikr").checked, elements: [...selected],
+        sound: $("soundToggle").checked,
       }));
     } catch (e) {}
   }
@@ -584,11 +524,6 @@
       if (s.holdIn != null) sliders.holdIn.value = s.holdIn;
       if (s.holdOut != null) sliders.holdOut.value = s.holdOut;
       if (s.volume != null) sliders.volume.value = s.volume;
-      if (s.version >= 2) $("dhikr").checked = !!s.dhikr; // older saves: keep default-on so the cues are included
-      if (Array.isArray(s.elements) && s.elements.length) {
-        selected.clear(); s.elements.forEach((id)=>selected.add(id));
-        [...cardsEl.children].forEach((c)=>{ const on = selected.has(c.dataset.id); c.classList.toggle("on",on); c.classList.toggle("off",!on); });
-      }
       const total = parseFloat(sliders.inhale.value)+parseFloat(sliders.exhale.value)+parseFloat(sliders.holdIn.value)+parseFloat(sliders.holdOut.value);
       sliders.pace.value = Math.min(20, Math.max(4, Math.round(total)));
       audio.volume = sliders.volume.value/100;
@@ -609,13 +544,7 @@
     currentAnim = a; if (paused) a.pause();
     return a.finished.then(()=>{ if(currentAnim===a) currentAnim=null; return true; }, ()=>{ if(currentAnim===a) currentAnim=null; return false; });
   }
-  const wait = (ms) => runAnim(timerEl, [{opacity:0},{opacity:0}], ms);
   function setPhase(word, sub) { $("phaseWord").textContent = word; $("phaseSub").textContent = sub||""; }
-  function setDhikr(on, phrase, trans) {
-    const d = $("phaseDhikr");
-    if (on) { d.innerHTML = phrase + `<small>${trans}</small>`; d.classList.add("show"); }
-    else { d.classList.remove("show"); }
-  }
   function buildDots(n) { const d=$("dots"); d.innerHTML=""; for(let i=0;i<n;i++){ const s=document.createElement("div"); s.className="dot"; d.appendChild(s); } }
   function markDots(i) { [...$("dots").children].forEach((dot,k)=>{ dot.className="dot"+(k<i?" done":k===i?" cur":""); }); }
 
@@ -624,18 +553,16 @@
     applyTheme(el); markDots(index);
     $("elemName").textContent = el.name; $("elemQuality").textContent = el.quality;
     $("orbIcon").innerHTML = ICONS[el.id]; orb.style.transform = `scale(${MIN})`;
-    setPhase(el.name, el.visualize); setDhikr(false); $("breathCount").textContent = "Settle in";
-    if (!(await wait(INTRO_S*1000))) return interrupt || "stop";
     const inSub  = "in "  + methodText(el.inhale) + (el.refined ? ", very refined" : "");
     const outSub = "out " + methodText(el.exhale) + (el.refined ? ", very refined" : "");
     for (let b=0; b<cfg.breaths; b++) {
       $("breathCount").textContent = `Breath ${b+1} of ${cfg.breaths}`;
-      setPhase("Breathe In", inSub); setDhikr(cfg.dhikr, "Ya Shafee", "the Healer");
+      setPhase("Breathe In", inSub);
       if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MAX})`}], cfg.inhaleMs, EASE))) return interrupt || "stop";
-      if (cfg.holdInMs > 0) { setPhase("Hold","full and still"); setDhikr(false); if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MAX})`}], cfg.holdInMs))) return interrupt || "stop"; }
-      setPhase("Breathe Out", outSub); setDhikr(cfg.dhikr, "Ya Kafee", "the Remedy");
+      if (cfg.holdInMs > 0) { setPhase("Hold","full and still"); if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MAX})`}], cfg.holdInMs))) return interrupt || "stop"; }
+      setPhase("Breathe Out", outSub);
       if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MIN})`}], cfg.exhaleMs, EASE))) return interrupt || "stop";
-      if (cfg.holdOutMs > 0) { setPhase("Hold","empty and open"); setDhikr(false); if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MIN})`}], cfg.holdOutMs))) return interrupt || "stop"; }
+      if (cfg.holdOutMs > 0) { setPhase("Hold","empty and open"); if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MIN})`}], cfg.holdOutMs))) return interrupt || "stop"; }
     }
     return "done";
   }
@@ -693,7 +620,7 @@
   $("backBtn").addEventListener("click", () => { show("home"); startHero(); });
   $("doneSettingsBtn").addEventListener("click", () => { show("home"); startHero(); });
   $("startBtn").addEventListener("click", () => {
-    const cfg = readConfig(); if (cfg.elements.length===0) return;
+    const cfg = readConfig();
     if (cfg.sound) audio.start();
     runSession(cfg);
   });
