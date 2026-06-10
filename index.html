@@ -245,7 +245,7 @@
       <div class="home-est" id="homeEst"></div>
       <div class="sound-row">
         <span class="ico" id="soundIcon"></span>
-        <span class="lbl">Sound</span>
+        <span class="lbl">Music</span>
         <label class="sw">
           <input type="checkbox" id="soundToggle" checked />
           <span class="track"></span><span class="knob"></span>
@@ -308,7 +308,7 @@
           <small>Silently say <i>Ya Shafee</i> (the Healer) on the in-breath, and <i>Ya Kafee</i> (the Remedy) on the out-breath.</small>
         </div>
         <label class="sw">
-          <input type="checkbox" id="dhikr" />
+          <input type="checkbox" id="dhikr" checked />
           <span class="track"></span><span class="knob"></span>
         </label>
       </div>
@@ -320,6 +320,7 @@
 
   <!-- ===================== SESSION ===================== -->
   <section id="session" class="screen">
+    <button class="icon-btn left" id="musicBtn" title="Music on / off" aria-label="Toggle music"></button>
     <div class="sess-top">
       <div class="dots" id="dots"></div>
       <div>
@@ -521,14 +522,17 @@
 
   /* sound on/off (home) + volume (settings) */
   const volWrap = $("volWrap");
-  function reflectSound(on) {
+  function setMusic(on) {
     $("soundToggle").checked = on;
-    $("soundIcon").innerHTML = on ? ICONS.soundOn : ICONS.soundOff;
+    const icon = on ? ICONS.soundOn : ICONS.soundOff;
+    $("soundIcon").innerHTML = icon;
+    $("musicBtn").innerHTML = icon;
     volWrap.style.opacity = on ? "1" : ".4";
     volWrap.style.pointerEvents = on ? "auto" : "none";
     audio.setEnabled(on);
   }
-  $("soundToggle").addEventListener("change", (e) => { reflectSound(e.target.checked); saveSettings(); });
+  $("soundToggle").addEventListener("change", (e) => { setMusic(e.target.checked); saveSettings(); });
+  $("musicBtn").addEventListener("click", () => { setMusic(!$("soundToggle").checked); saveSettings(); });
   sliders.volume.addEventListener("input", (e) => { audio.setVolume(e.target.value/100); saveSettings(); });
   $("dhikr").addEventListener("change", saveSettings);
 
@@ -561,7 +565,7 @@
       localStorage.setItem(STORE, JSON.stringify({
         breaths: sliders.breaths.value, inhale: sliders.inhale.value, exhale: sliders.exhale.value,
         holdIn: sliders.holdIn.value, holdOut: sliders.holdOut.value, volume: sliders.volume.value,
-        sound: $("soundToggle").checked, dhikr: $("dhikr").checked, elements: [...selected],
+        version: 2, sound: $("soundToggle").checked, dhikr: $("dhikr").checked, elements: [...selected],
       }));
     } catch (e) {}
   }
@@ -574,7 +578,7 @@
       if (s.holdIn != null) sliders.holdIn.value = s.holdIn;
       if (s.holdOut != null) sliders.holdOut.value = s.holdOut;
       if (s.volume != null) sliders.volume.value = s.volume;
-      $("dhikr").checked = !!s.dhikr;
+      if (s.version >= 2) $("dhikr").checked = !!s.dhikr; // older saves: keep default-on so the cues are included
       if (Array.isArray(s.elements) && s.elements.length) {
         selected.clear(); s.elements.forEach((id)=>selected.add(id));
         [...cardsEl.children].forEach((c)=>{ const on = selected.has(c.dataset.id); c.classList.toggle("on",on); c.classList.toggle("off",!on); });
@@ -582,10 +586,10 @@
       const total = parseFloat(sliders.inhale.value)+parseFloat(sliders.exhale.value)+parseFloat(sliders.holdIn.value)+parseFloat(sliders.holdOut.value);
       sliders.pace.value = Math.min(20, Math.max(4, Math.round(total)));
       audio.volume = sliders.volume.value/100;
-      reflectSound(s.sound !== false);
+      setMusic(s.sound !== false);
     } else {
       audio.volume = sliders.volume.value/100;
-      reflectSound(true);
+      setMusic(true);
     }
     fmtVal(); updateEstimate();
   }
@@ -614,7 +618,6 @@
     applyTheme(el); markDots(index);
     $("elemName").textContent = el.name; $("elemQuality").textContent = el.quality;
     $("orbIcon").innerHTML = ICONS[el.id]; orb.style.transform = `scale(${MIN})`;
-    if (cfg.sound) audio.chime([el.id==="ether"?880:528, 660, 792]);
     setPhase(el.name, el.visualize); setDhikr(false); $("breathCount").textContent = "Settle in";
     if (!(await wait(INTRO_S*1000))) return interrupt || "stop";
     const inSub  = "in "  + methodText(el.inhale) + (el.refined ? ", very refined" : "");

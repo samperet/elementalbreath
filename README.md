@@ -18,15 +18,15 @@ Each element has its own traditional breath method (5 breaths each) and a color 
 | **Air** | in through the mouth, out through the mouth | the color **blue** |
 | **Ether** | in through the nose, out through the nose — very refined | the color **grey**, or transparency |
 
-**Dhikr (optional).** You may silently say **Ya Shafee** (the Healer) on the in-breath, and **Ya Kafee** (the Remedy) on the out-breath. Enable it in settings to see the phrases with each breath.
+**Dhikr.** Silently say **Ya Shafee** (the Healer) on the in-breath, and **Ya Kafee** (the Remedy) on the out-breath. These cues are shown with each breath by default; you can toggle them off in settings.
 
 ## Features
 
-- **Minimal home** with a large *Begin* button, an always-visible **sound toggle**, and a hero orb that gently fades between the element icons
+- **Minimal home** with a large *Begin* button, an always-visible **music toggle**, and a hero orb that gently fades between the element icons
 - **Settings page** (⚙) for all timing: breaths per element (default 5, range 1–20), breath length, independent inhale / exhale durations, optional holds, element selection, and volume
 - **Element icon & glowing orb** that expands on the inhale and contracts on the exhale, themed to each element's color
-- **Optional dhikr** — *Ya Shafee* / *Ya Kafee* shown with the in/out breath
-- **Background music** — a looping ambient track plays through the whole practice, with soft chimes marking each element. Toggle + volume.
+- **Dhikr cues** — *Ya Shafee* (the Healer) on the in-breath, *Ya Kafee* (the Remedy) on the out-breath; shown by default
+- **Background music** — a looping ambient track plays through the whole practice. A music toggle is available on the home screen **and during the session**, plus a volume control. A single chime resolves the practice at the end.
 - **Installable PWA** — web manifest + service worker, fully offline after first load (audio included)
 - Settings persist via `localStorage`; smooth color cross-fades between elements and a resolving completion chime
 
@@ -49,7 +49,7 @@ Each element has its own traditional breath method (5 breaths each) and a color 
 | Next element | `→` | right |
 | End session | `Esc` | left |
 
-> Sound starts only after you press **Begin** — browsers block audio until a user interaction.
+> Music starts only after you press **Begin** — browsers block audio until a user interaction.
 
 ## Run it
 
