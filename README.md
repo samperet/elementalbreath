@@ -8,23 +8,26 @@ It's a self-contained `index.html` — no build step, no dependencies, works off
 
 ## The practice
 
-Each element has its own traditional breath method, quality, and a synthesized soundscape:
+Each element has its own traditional breath method (5 breaths each) and a color to visualize:
 
-| Element | Breath method | Quality | Sound |
-| --- | --- | --- | --- |
-| **Earth** | in & out through the nose | stability · grounding | deep low drone |
-| **Water** | in through nose, out through mouth | flow · purification | flowing stream + drips |
-| **Fire** | in through mouth, out through nose | energy · transformation | low roar + crackle |
-| **Air** | in & out through the mouth | freedom · expansion | gusting wind |
-| **Ether** | soft breath, parted lips | spaciousness · peace | high shimmer + bells |
+| Element | Breath method | Visualize |
+| --- | --- | --- |
+| **Earth** | in through the nose, out through the nose | the color **gold** |
+| **Water** | in through the nose, out through the mouth | the color **green** |
+| **Fire** | in through the mouth, out through the nose | the color **red** |
+| **Air** | in through the mouth, out through the mouth | the color **blue** |
+| **Ether** | in through the nose, out through the nose — very refined | the color **grey**, or transparency |
+
+**Dhikr (optional).** You may silently say **Ya Shafee** (the Healer) on the in-breath, and **Ya Kafee** (the Remedy) on the out-breath. Enable it in settings to see the phrases with each breath.
 
 ## Features
 
 - **Minimal home** with a large *Begin* button, an always-visible **sound toggle**, and a hero orb that gently fades between the element icons
 - **Settings page** (⚙) for all timing: breaths per element (default 5, range 1–20), breath length, independent inhale / exhale durations, optional holds, element selection, and volume
-- **Element icon & glowing orb** that expands on the inhale and contracts on the exhale
-- **Synthesized element sounds** via the Web Audio API — no audio files, no network, no licensing concerns; each element's texture is generated live. Toggle + volume.
-- **Installable PWA** — web manifest + service worker, fully offline after first load
+- **Element icon & glowing orb** that expands on the inhale and contracts on the exhale, themed to each element's color
+- **Optional dhikr** — *Ya Shafee* / *Ya Kafee* shown with the in/out breath
+- **Background music** — a looping ambient track plays through the whole practice, with soft chimes marking each element. Toggle + volume.
+- **Installable PWA** — web manifest + service worker, fully offline after first load (audio included)
 - Settings persist via `localStorage`; smooth color cross-fades between elements and a resolving completion chime
 
 ## Project files
@@ -32,6 +35,7 @@ Each element has its own traditional breath method, quality, and a synthesized s
 | File | Purpose |
 | --- | --- |
 | `index.html` | The entire app (UI, audio engine, session logic) |
+| `background.mp3` | Looping background music |
 | `manifest.webmanifest` | PWA manifest |
 | `sw.js` | Service worker (offline app shell) |
 | `icon-*.png`, `apple-touch-icon.png`, `favicon-32.png` | App icons |

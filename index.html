@@ -150,10 +150,10 @@
   .card .check { position: absolute; top: 7px; right: 7px; width: 15px; height: 15px; border-radius: 50%; background: currentColor; display: grid; place-items: center; transition: opacity .2s; }
   .card .check svg { width: 9px; height: 9px; color: #0a0b10; }
   .card.e-earth { color: #e0b54f; } .card.e-earth.on { border-color: rgba(224,181,79,.5); background: rgba(224,181,79,.09); }
-  .card.e-water { color: #46c7b6; } .card.e-water.on { border-color: rgba(70,199,182,.5); background: rgba(70,199,182,.09); }
-  .card.e-fire  { color: #ff7a52; } .card.e-fire.on  { border-color: rgba(255,122,82,.5);  background: rgba(255,122,82,.09); }
+  .card.e-water { color: #57c46a; } .card.e-water.on { border-color: rgba(87,196,106,.5); background: rgba(87,196,106,.09); }
+  .card.e-fire  { color: #ff5236; } .card.e-fire.on  { border-color: rgba(255,82,54,.5);   background: rgba(255,82,54,.09); }
   .card.e-air   { color: #82a9ff; } .card.e-air.on   { border-color: rgba(130,169,255,.5); background: rgba(130,169,255,.09); }
-  .card.e-ether { color: #b89cf0; } .card.e-ether.on { border-color: rgba(184,156,240,.5); background: rgba(184,156,240,.09); }
+  .card.e-ether { color: #c2cad6; } .card.e-ether.on { border-color: rgba(194,202,214,.5); background: rgba(194,202,214,.1); }
 
   .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
   @media (max-width: 540px){ .controls-grid { grid-template-columns: 1fr; gap: 14px; } .cards { gap: 6px; } }
@@ -169,6 +169,11 @@
 
   .vol-wrap { display: flex; align-items: center; gap: 12px; transition: opacity .3s; }
   .vol-wrap svg { width: 18px; height: 18px; color: var(--muted); flex: 0 0 auto; }
+
+  .opt-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 12px; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.025); }
+  .opt-row .lbl { font-size: 13.5px; color: #d6dbe4; }
+  .opt-row .lbl small { display: block; color: var(--muted); font-size: 11.5px; margin-top: 4px; line-height: 1.45; max-width: 40ch; }
+  .opt-row .lbl small i { color: color-mix(in srgb, var(--glow) 65%, #fff 35%); font-style: normal; }
 
   .settings-done { display: block; margin: 32px auto 0; }
   .btn-ghost { font-size: 15px; letter-spacing: .03em; padding: 13px 34px; border-radius: 40px; cursor: pointer; color: var(--fg); background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.16); transition: background .2s, transform .15s; }
@@ -191,9 +196,12 @@
   #orbIcon svg { width: 100%; height: 100%; }
 
   .sess-bottom { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 22px; }
-  .phase { text-align: center; min-height: 76px; }
+  .phase { text-align: center; min-height: 116px; }
   .phase .word { font-family: var(--ui-serif); font-size: clamp(30px, 6vw, 44px); font-weight: 500; letter-spacing: .02em; line-height: 1.1; }
   .phase .sub { color: var(--muted); font-size: 14px; letter-spacing: .04em; margin-top: 6px; }
+  .phase .dhikr { margin-top: 12px; font-family: var(--ui-serif); font-style: italic; font-size: 21px; letter-spacing: .03em; color: color-mix(in srgb, var(--glow) 72%, #fff 28%); opacity: 0; transition: opacity .5s ease; min-height: 28px; }
+  .phase .dhikr.show { opacity: 1; }
+  .phase .dhikr small { display: block; font-style: normal; font-family: var(--ui-sans); font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
   .breath-count { font-size: 12.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted); font-variant-numeric: tabular-nums; }
 
   .sess-controls { display: flex; gap: 14px; align-items: center; }
@@ -287,10 +295,22 @@
         </div>
       </div>
 
-      <div class="sec-label">Volume</div>
+      <div class="sec-label">Background music &amp; volume</div>
       <div class="vol-wrap" id="volWrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>
         <input type="range" id="volume" min="0" max="100" step="1" value="60" />
+      </div>
+
+      <div class="sec-label">Dhikr &middot; optional</div>
+      <div class="opt-row">
+        <div class="lbl">
+          Sacred phrase with the breath
+          <small>Silently say <i>Ya Shafee</i> (the Healer) on the in-breath, and <i>Ya Kafee</i> (the Remedy) on the out-breath.</small>
+        </div>
+        <label class="sw">
+          <input type="checkbox" id="dhikr" />
+          <span class="track"></span><span class="knob"></span>
+        </label>
       </div>
 
       <div class="settings-tag" style="margin:24px 0 0;">Approx. <b id="estTime" style="color:var(--fg)">2:40</b> &middot; <span id="estDetail">5 elements</span></div>
@@ -315,6 +335,7 @@
       <div class="phase">
         <div class="word" id="phaseWord">Breathe In</div>
         <div class="sub" id="phaseSub">through the nose</div>
+        <div class="dhikr" id="phaseDhikr"></div>
       </div>
       <div class="breath-count" id="breathCount">Breath 1 of 5</div>
       <div class="sess-controls">
@@ -354,138 +375,79 @@
 
   /* ---------------- Elements ---------------- */
   const ELEMENTS = [
-    { id:"earth", name:"Earth", quality:"Stability · Grounding", inhale:"nose",  exhale:"nose",
-      visualize:"Draw the magnetic strength of the earth up through your body.", c1:"#c9a14a", c2:"#5a3f17", glow:"#e0b54f" },
-    { id:"water", name:"Water", quality:"Flow · Purification",   inhale:"nose",  exhale:"mouth",
-      visualize:"Feel a cool current washing down, cleansing all it touches.",    c1:"#2e9e8f", c2:"#0d3b3a", glow:"#46c7b6" },
-    { id:"fire",  name:"Fire",  quality:"Energy · Transformation", inhale:"mouth", exhale:"nose",
-      visualize:"Sense a warm radiance glowing outward from your heart.",         c1:"#e2603b", c2:"#6f1c10", glow:"#ff7a52" },
-    { id:"air",   name:"Air",   quality:"Freedom · Expansion",    inhale:"mouth", exhale:"mouth",
-      visualize:"Expand into spacious, weightless openness in every direction.",  c1:"#5b8def", c2:"#1e3a6b", glow:"#82a9ff" },
-    { id:"ether", name:"Ether", quality:"Spaciousness · Peace",   inhale:"soft",  exhale:"soft",
-      visualize:"Dissolve into the boundless space that holds all things.",       c1:"#9b7fd4", c2:"#2e2150", glow:"#b89cf0" },
+    { id:"earth", name:"Earth", quality:"Stability · Grounding",     short:"nose",        inhale:"nose",  exhale:"nose",
+      visualize:"Visualize a radiant golden light filling your body.",        c1:"#c9a14a", c2:"#5a3f17", glow:"#e0b54f" },
+    { id:"water", name:"Water", quality:"Flow · Purification",       short:"nose→mouth",  inhale:"nose",  exhale:"mouth",
+      visualize:"Visualize a cool, flowing green washing through you.",       c1:"#3a9d52", c2:"#123d20", glow:"#57c46a" },
+    { id:"fire",  name:"Fire",  quality:"Energy · Transformation",   short:"mouth→nose",  inhale:"mouth", exhale:"nose",
+      visualize:"Visualize a glowing red warmth radiating from your heart.",  c1:"#d8392b", c2:"#5e120b", glow:"#ff5236" },
+    { id:"air",   name:"Air",   quality:"Freedom · Expansion",       short:"mouth",       inhale:"mouth", exhale:"mouth",
+      visualize:"Visualize a clear, expansive blue in every direction.",      c1:"#5b8def", c2:"#1e3a6b", glow:"#82a9ff" },
+    { id:"ether", name:"Ether", quality:"Refinement · Transparency", short:"refined",     inhale:"nose",  exhale:"nose", refined:true,
+      visualize:"Visualize a luminous grey — or pure transparency.",          c1:"#8b94a4", c2:"#2b303a", glow:"#c2cad6" },
   ];
   const methodText = (m) => m === "nose" ? "through the nose" : m === "mouth" ? "through the mouth" : "softly, with parted lips";
 
-  /* ---------------- Audio engine (synthesized element textures) ---------------- */
+  /* ---------------- Audio: looping background track + soft chimes ---------------- */
   class AudioEngine {
-    constructor() { this.ctx=null; this.master=null; this.noise=null; this.current=null; this.volume=0.6; this.enabled=true; }
-    ensure() {
+    constructor() {
+      this.ctx = null; this.master = null; this.enabled = true; this.volume = 0.6; this.active = false; this._fade = null;
+      this.music = new Audio("background.mp3");
+      this.music.loop = true; this.music.preload = "auto"; this.music.volume = 0;
+    }
+    ensureCtx() {
       if (this.ctx) return;
       const AC = window.AudioContext || window.webkitAudioContext;
       this.ctx = new AC();
       this.master = this.ctx.createGain();
       this.master.gain.value = this.enabled ? this.volume : 0;
       this.master.connect(this.ctx.destination);
-      const len = Math.floor(this.ctx.sampleRate * 2.5);
-      const buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
-      const d = buf.getChannelData(0);
-      for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
-      this.noise = buf;
     }
-    start() { this.ensure(); if (this.ctx.state === "suspended") this.ctx.resume(); }
-    suspend() { if (this.ctx) return this.ctx.suspend(); }
-    resume() { if (this.ctx) return this.ctx.resume(); }
-    setVolume(v) { this.volume = v; if (this.master && this.enabled) this.master.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05); }
-    setEnabled(b) { this.enabled = b; if (this.master) this.master.gain.setTargetAtTime(b ? this.volume : 0, this.ctx.currentTime, 0.05); }
-    _src() { const s = this.ctx.createBufferSource(); s.buffer = this.noise; s.loop = true; s.start(); return s; }
-
-    setElement(id) {
+    _fadeMusic(target, ms) {
+      if (this._fade) { clearInterval(this._fade); this._fade = null; }
+      target = Math.max(0, Math.min(1, target));
+      if (ms <= 0) { this.music.volume = target; return; }
+      const from = this.music.volume, t0 = performance.now();
+      this._fade = setInterval(() => {
+        const k = Math.min(1, (performance.now() - t0) / ms);
+        this.music.volume = Math.max(0, Math.min(1, from + (target - from) * k));
+        if (k >= 1) { clearInterval(this._fade); this._fade = null; }
+      }, 40);
+    }
+    _play() { const p = this.music.play(); if (p && p.catch) p.catch(() => {}); }
+    start() {
+      this.ensureCtx();
+      if (this.ctx.state === "suspended") this.ctx.resume();
+      this.active = true;
+      if (this.enabled) { try { this.music.currentTime = 0; } catch (e) {} this._play(); this._fadeMusic(this.volume, 1600); }
+    }
+    suspend() { this._fadeMusic(0, 250); setTimeout(() => { try { this.music.pause(); } catch (e) {} }, 260); if (this.ctx) return this.ctx.suspend(); }
+    resume() { if (this.active && this.enabled) { this._play(); this._fadeMusic(this.volume, 500); } if (this.ctx) return this.ctx.resume(); }
+    stop() { this.active = false; this._fadeMusic(0, 900); setTimeout(() => { try { this.music.pause(); this.music.currentTime = 0; } catch (e) {} }, 950); }
+    setEnabled(b) {
+      this.enabled = b;
+      if (this.master) this.master.gain.setTargetAtTime(b ? this.volume : 0, this.ctx.currentTime, 0.05);
+      if (this.active) {
+        if (b) { this._play(); this._fadeMusic(this.volume, 300); }
+        else { this._fadeMusic(0, 300); setTimeout(() => { if (!this.enabled) { try { this.music.pause(); } catch (e) {} } }, 320); }
+      }
+    }
+    setVolume(v) {
+      this.volume = v;
+      if (this.master && this.enabled) this.master.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05);
+      if (this.active && this.enabled) this._fadeMusic(v, 150);
+    }
+    chime(freqs, dur = 2.4) {
       if (!this.ctx) return;
-      this.stopElement();
-      const level = this.ctx.createGain(); level.gain.value = 0; level.connect(this.master);
-      let parts = { oscs: [], timers: [] };
-      try {
-        if (id === "earth") parts = this._earth(level);
-        else if (id === "water") parts = this._water(level);
-        else if (id === "fire") parts = this._fire(level);
-        else if (id === "air") parts = this._air(level);
-        else if (id === "ether") parts = this._ether(level);
-      } catch (e) { console.warn("audio build failed", e); }
       const t = this.ctx.currentTime;
-      level.gain.setValueAtTime(0.0001, t);
-      level.gain.linearRampToValueAtTime(1, t + 1.4);
-      this.current = { level, parts };
-    }
-    stopElement() {
-      if (!this.current) return;
-      const { level, parts } = this.current; this.current = null;
-      parts.timers.forEach(clearInterval);
-      const t = this.ctx.currentTime;
-      try { level.gain.cancelScheduledValues(t); level.gain.setValueAtTime(level.gain.value, t); level.gain.linearRampToValueAtTime(0.0001, t + 0.9); } catch (e) {}
-      setTimeout(() => {
-        parts.oscs.forEach((o) => { try { o.stop(); } catch (e) {} try { o.disconnect(); } catch (e) {} });
-        try { level.disconnect(); } catch (e) {}
-      }, 1200);
-    }
-    _earth(level) {
-      const ctx = this.ctx;
-      const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 220; lp.Q.value = 0.6;
-      const tone = ctx.createGain(); tone.gain.value = 0.85; lp.connect(tone); tone.connect(level);
-      const spec = [[55,"sine",0.55],[55.3,"sine",0.3],[82.5,"triangle",0.16],[110,"sine",0.08]];
-      const oscs = spec.map(([f,type,g]) => { const o=ctx.createOscillator(); o.type=type; o.frequency.value=f; const og=ctx.createGain(); og.gain.value=g; o.connect(og); og.connect(lp); o.start(); return o; });
-      const lfo = ctx.createOscillator(); lfo.frequency.value = 0.07; const lg = ctx.createGain(); lg.gain.value = 0.12; lfo.connect(lg); lg.connect(tone.gain); lfo.start(); oscs.push(lfo);
-      return { oscs, timers: [] };
-    }
-    _water(level) {
-      const ctx = this.ctx, src = this._src();
-      const bp = ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=900; bp.Q.value=0.8;
-      const bp2 = ctx.createBiquadFilter(); bp2.type="bandpass"; bp2.frequency.value=430; bp2.Q.value=1.1;
-      const g = ctx.createGain(); g.gain.value=0.5; src.connect(bp); bp.connect(g); src.connect(bp2); bp2.connect(g); g.connect(level);
-      const l1=ctx.createOscillator(); l1.frequency.value=0.5; const lg1=ctx.createGain(); lg1.gain.value=320; l1.connect(lg1); lg1.connect(bp.frequency); l1.start();
-      const l2=ctx.createOscillator(); l2.frequency.value=0.23; const lg2=ctx.createGain(); lg2.gain.value=120; l2.connect(lg2); lg2.connect(bp2.frequency); l2.start();
-      const timers=[ setInterval(()=>{ if(Math.random()<0.55) this._drip(level); }, 850) ];
-      return { oscs:[src,l1,l2], timers };
-    }
-    _drip(dest) {
-      const ctx=this.ctx, t=ctx.currentTime; const o=ctx.createOscillator(); o.type="sine";
-      const f=580+Math.random()*520; o.frequency.setValueAtTime(f,t); o.frequency.exponentialRampToValueAtTime(f*0.5,t+0.12);
-      const g=ctx.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.1,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+0.25);
-      o.connect(g); g.connect(dest); o.start(t); o.stop(t+0.3);
-    }
-    _fire(level) {
-      const ctx=this.ctx, src=this._src();
-      const lp=ctx.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=440; lp.Q.value=0.7;
-      const g=ctx.createGain(); g.gain.value=0.3; src.connect(lp); lp.connect(g); g.connect(level);
-      const lfo=ctx.createOscillator(); lfo.frequency.value=0.6; const lg=ctx.createGain(); lg.gain.value=0.12; lfo.connect(lg); lg.connect(g.gain); lfo.start();
-      const timers=[ setInterval(()=>{ const n=1+Math.floor(Math.random()*3); for(let i=0;i<n;i++) setTimeout(()=>this._crackle(level), Math.random()*190); }, 230) ];
-      return { oscs:[src,lfo], timers };
-    }
-    _crackle(dest) {
-      const ctx=this.ctx, t=ctx.currentTime; const s=ctx.createBufferSource(); s.buffer=this.noise; s.loop=false;
-      const hp=ctx.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=2600+Math.random()*2200;
-      const g=ctx.createGain(); const dur=0.02+Math.random()*0.05;
-      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.05+Math.random()*0.08,t+0.004); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-      s.connect(hp); hp.connect(g); g.connect(dest);
-      const off=Math.random()*(this.noise.duration-dur-0.02); try { s.start(t,off,dur+0.03); } catch(e) {}
-    }
-    _air(level) {
-      const ctx=this.ctx, src=this._src();
-      const bp=ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=820; bp.Q.value=3.5;
-      const g=ctx.createGain(); g.gain.value=0.26; src.connect(bp); bp.connect(g); g.connect(level);
-      const l1=ctx.createOscillator(); l1.frequency.value=0.13; const lg1=ctx.createGain(); lg1.gain.value=360; l1.connect(lg1); lg1.connect(bp.frequency); l1.start();
-      const l2=ctx.createOscillator(); l2.frequency.value=0.19; const lg2=ctx.createGain(); lg2.gain.value=0.17; l2.connect(lg2); lg2.connect(g.gain); l2.start();
-      return { oscs:[src,l1,l2], timers:[] };
-    }
-    _ether(level) {
-      const ctx=this.ctx; const out=ctx.createGain(); out.gain.value=0.5; out.connect(level);
-      const base=[660,880,1320,1760]; const oscs=[];
-      base.forEach((f,i)=>{ const o=ctx.createOscillator(); o.type="sine"; o.frequency.value=f; const g=ctx.createGain(); g.gain.value=0.05/(i*0.5+1);
-        const trem=ctx.createOscillator(); trem.frequency.value=0.2+i*0.07; const tg=ctx.createGain(); tg.gain.value=g.gain.value*0.7; trem.connect(tg); tg.connect(g.gain); trem.start();
-        o.connect(g); g.connect(out); o.start(); oscs.push(o,trem); });
-      const timers=[ setInterval(()=>{ if(Math.random()<0.5) this._bell(out, 1320*(1+Math.floor(Math.random()*3)*0.5), 0.05); }, 2600) ];
-      return { oscs, timers };
-    }
-    _bell(dest, freq, peak=0.12, dur=2.2) {
-      const ctx=this.ctx, t=ctx.currentTime; const o=ctx.createOscillator(); o.type="sine"; o.frequency.value=freq;
-      const g=ctx.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(peak,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-      o.connect(g); g.connect(dest); o.start(t); o.stop(t+dur+0.1);
-    }
-    chime(freqs, dur=2.4) {
-      if (!this.ctx) return; const t=this.ctx.currentTime;
-      freqs.forEach((f,i)=>{ const o=this.ctx.createOscillator(); o.type="sine"; o.frequency.value=f; const g=this.ctx.createGain(); const s=t+i*0.09;
-        g.gain.setValueAtTime(0.0001,s); g.gain.exponentialRampToValueAtTime(0.11,s+0.02); g.gain.exponentialRampToValueAtTime(0.0001,s+dur);
-        o.connect(g); g.connect(this.master); o.start(s); o.stop(s+dur+0.1); });
+      freqs.forEach((f, i) => {
+        const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = f;
+        const g = this.ctx.createGain(); const s = t + i * 0.09;
+        g.gain.setValueAtTime(0.0001, s);
+        g.gain.exponentialRampToValueAtTime(0.09, s + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, s + dur);
+        o.connect(g); g.connect(this.master); o.start(s); o.stop(s + dur + 0.1);
+      });
     }
   }
   const audio = new AudioEngine();
@@ -498,13 +460,8 @@
   const orb = $("orb");
   const STORE = "elemental-breath-settings";
 
-  function applyTheme(el) {
-    app.style.setProperty("--c1", el.c1); app.style.setProperty("--c2", el.c2); app.style.setProperty("--glow", el.glow);
-  }
-  function show(name) {
-    Object.values(screens).forEach((s) => s.classList.remove("active"));
-    screens[name].classList.add("active");
-  }
+  function applyTheme(el) { app.style.setProperty("--c1", el.c1); app.style.setProperty("--c2", el.c2); app.style.setProperty("--glow", el.glow); }
+  function show(name) { Object.values(screens).forEach((s) => s.classList.remove("active")); screens[name].classList.add("active"); }
 
   /* ---------------- Home: cycling element icons ---------------- */
   const heroIcons = $("heroIcons");
@@ -521,7 +478,7 @@
   ELEMENTS.forEach((el) => {
     const c = document.createElement("div");
     c.className = `card e-${el.id} on`; c.dataset.id = el.id;
-    c.innerHTML = `<span class="check">${ICONS.check}</span><div class="ico">${ICONS[el.id]}</div><div class="nm">${el.name}</div><div class="mth">${el.inhale===el.exhale ? (el.inhale==="soft"?"soft":el.inhale) : el.inhale+"→"+el.exhale}</div>`;
+    c.innerHTML = `<span class="check">${ICONS.check}</span><div class="ico">${ICONS[el.id]}</div><div class="nm">${el.name}</div><div class="mth">${el.short}</div>`;
     c.addEventListener("click", () => {
       if (selected.has(el.id)) { selected.delete(el.id); c.classList.add("off"); c.classList.remove("on"); }
       else { selected.add(el.id); c.classList.remove("off"); c.classList.add("on"); }
@@ -573,6 +530,7 @@
   }
   $("soundToggle").addEventListener("change", (e) => { reflectSound(e.target.checked); saveSettings(); });
   sliders.volume.addEventListener("input", (e) => { audio.setVolume(e.target.value/100); saveSettings(); });
+  $("dhikr").addEventListener("change", saveSettings);
 
   const INTRO_S = 3;
   function readConfig() {
@@ -581,7 +539,7 @@
       breaths: parseInt(sliders.breaths.value,10),
       inhaleMs: parseFloat(sliders.inhale.value)*1000, exhaleMs: parseFloat(sliders.exhale.value)*1000,
       holdInMs: parseFloat(sliders.holdIn.value)*1000, holdOutMs: parseFloat(sliders.holdOut.value)*1000,
-      sound: $("soundToggle").checked,
+      sound: $("soundToggle").checked, dhikr: $("dhikr").checked,
     };
   }
   function updateEstimate() {
@@ -603,7 +561,7 @@
       localStorage.setItem(STORE, JSON.stringify({
         breaths: sliders.breaths.value, inhale: sliders.inhale.value, exhale: sliders.exhale.value,
         holdIn: sliders.holdIn.value, holdOut: sliders.holdOut.value, volume: sliders.volume.value,
-        sound: $("soundToggle").checked, elements: [...selected],
+        sound: $("soundToggle").checked, dhikr: $("dhikr").checked, elements: [...selected],
       }));
     } catch (e) {}
   }
@@ -616,6 +574,7 @@
       if (s.holdIn != null) sliders.holdIn.value = s.holdIn;
       if (s.holdOut != null) sliders.holdOut.value = s.holdOut;
       if (s.volume != null) sliders.volume.value = s.volume;
+      $("dhikr").checked = !!s.dhikr;
       if (Array.isArray(s.elements) && s.elements.length) {
         selected.clear(); s.elements.forEach((id)=>selected.add(id));
         [...cardsEl.children].forEach((c)=>{ const on = selected.has(c.dataset.id); c.classList.toggle("on",on); c.classList.toggle("off",!on); });
@@ -625,6 +584,7 @@
       audio.volume = sliders.volume.value/100;
       reflectSound(s.sound !== false);
     } else {
+      audio.volume = sliders.volume.value/100;
       reflectSound(true);
     }
     fmtVal(); updateEstimate();
@@ -641,6 +601,11 @@
   }
   const wait = (ms) => runAnim(timerEl, [{opacity:0},{opacity:0}], ms);
   function setPhase(word, sub) { $("phaseWord").textContent = word; $("phaseSub").textContent = sub||""; }
+  function setDhikr(on, phrase, trans) {
+    const d = $("phaseDhikr");
+    if (on) { d.innerHTML = phrase + `<small>${trans}</small>`; d.classList.add("show"); }
+    else { d.classList.remove("show"); }
+  }
   function buildDots(n) { const d=$("dots"); d.innerHTML=""; for(let i=0;i<n;i++){ const s=document.createElement("div"); s.className="dot"; d.appendChild(s); } }
   function markDots(i) { [...$("dots").children].forEach((dot,k)=>{ dot.className="dot"+(k<i?" done":k===i?" cur":""); }); }
 
@@ -649,17 +614,19 @@
     applyTheme(el); markDots(index);
     $("elemName").textContent = el.name; $("elemQuality").textContent = el.quality;
     $("orbIcon").innerHTML = ICONS[el.id]; orb.style.transform = `scale(${MIN})`;
-    if (cfg.sound) { audio.setElement(el.id); audio.chime([el.id==="ether"?880:528, 660, 792]); }
-    setPhase(el.name, el.visualize); $("breathCount").textContent = "Settle in";
+    if (cfg.sound) audio.chime([el.id==="ether"?880:528, 660, 792]);
+    setPhase(el.name, el.visualize); setDhikr(false); $("breathCount").textContent = "Settle in";
     if (!(await wait(INTRO_S*1000))) return interrupt || "stop";
+    const inSub  = "in "  + methodText(el.inhale) + (el.refined ? ", very refined" : "");
+    const outSub = "out " + methodText(el.exhale) + (el.refined ? ", very refined" : "");
     for (let b=0; b<cfg.breaths; b++) {
       $("breathCount").textContent = `Breath ${b+1} of ${cfg.breaths}`;
-      setPhase("Breathe In", "in " + methodText(el.inhale));
+      setPhase("Breathe In", inSub); setDhikr(cfg.dhikr, "Ya Shafee", "the Healer");
       if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MAX})`}], cfg.inhaleMs, EASE))) return interrupt || "stop";
-      if (cfg.holdInMs > 0) { setPhase("Hold","full and still"); if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MAX})`}], cfg.holdInMs))) return interrupt || "stop"; }
-      setPhase("Breathe Out", "out " + methodText(el.exhale));
+      if (cfg.holdInMs > 0) { setPhase("Hold","full and still"); setDhikr(false); if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MAX})`}], cfg.holdInMs))) return interrupt || "stop"; }
+      setPhase("Breathe Out", outSub); setDhikr(cfg.dhikr, "Ya Kafee", "the Remedy");
       if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MIN})`}], cfg.exhaleMs, EASE))) return interrupt || "stop";
-      if (cfg.holdOutMs > 0) { setPhase("Hold","empty and open"); if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MIN})`}], cfg.holdOutMs))) return interrupt || "stop"; }
+      if (cfg.holdOutMs > 0) { setPhase("Hold","empty and open"); setDhikr(false); if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MIN})`}], cfg.holdOutMs))) return interrupt || "stop"; }
     }
     return "done";
   }
@@ -671,11 +638,11 @@
     show("session"); updatePauseIcon();
     for (let i=0; i<cfg.elements.length; i++) {
       const status = await runElement(cfg.elements[i], i, cfg);
-      if (status === "stop") { running=false; audio.stopElement(); return; }
+      if (status === "stop") { running=false; audio.stop(); return; }
     }
     [...$("dots").children].forEach((d)=>d.className="dot done");
-    audio.stopElement();
     if (cfg.sound) audio.chime([523.25, 659.25, 783.99], 3.2);
+    audio.stop();
     running=false; show("done");
   }
 
@@ -694,7 +661,7 @@
   function stopSession() {
     if (!running) return; interrupt="stop"; running=false;
     if (paused) { paused=false; audio.resume(); updatePauseIcon(); }
-    currentAnim && currentAnim.cancel(); audio.stopElement();
+    currentAnim && currentAnim.cancel(); audio.stop();
     show("home"); startHero();
   }
   function skipElement() {
