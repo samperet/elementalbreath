@@ -156,12 +156,12 @@
 
   /* ======================= SESSION ======================= */
   #session { justify-content: space-between; padding-top: calc(clamp(20px,5vh,54px) + var(--safe-t)); padding-bottom: calc(clamp(20px,5vh,54px) + var(--safe-b)); }
-  .sess-top { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .sess-top { width: 100%; display: flex; flex-direction: column; align-items: center; }
   .dots { display: flex; gap: 10px; }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.2); transition: background .5s, transform .5s, box-shadow .5s; }
   .dot.done { background: rgba(255,255,255,.45); }
   .dot.cur { background: var(--glow); transform: scale(1.5); box-shadow: 0 0 12px var(--glow); }
-  .elem-name { font-family: var(--ui-serif); font-size: clamp(28px, 5.4vw, 40px); font-weight: 500; letter-spacing: .14em; text-transform: uppercase; text-align: center; }
+  .elem-name { position: absolute; top: 0; left: 0; right: 0; height: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--ui-serif); font-size: clamp(28px, 5.4vw, 40px); font-weight: 500; letter-spacing: .14em; text-transform: uppercase; text-align: center; }
 
   .orb-stage { flex: 1; display: grid; place-items: center; width: 100%; position: relative; }
   #orb { transform: scale(.5); }
@@ -273,9 +273,9 @@
     <button class="icon-btn left" id="musicBtn" title="Music on / off" aria-label="Toggle music"></button>
     <div class="sess-top">
       <div class="dots" id="dots"></div>
-      <div class="elem-name" id="elemName">Earth</div>
     </div>
     <div class="orb-stage">
+      <div class="elem-name" id="elemName">Earth</div>
       <div id="orb" class="orb"></div>
       <div id="orbIcon"></div>
     </div>
@@ -565,7 +565,6 @@
       if (status === "stop") { running=false; audio.stop(); return; }
     }
     [...$("dots").children].forEach((d)=>d.className="dot done");
-    if (cfg.sound) audio.chime([523.25, 659.25, 783.99], 3.2);
     audio.stop();
     running=false; show("done");
   }
