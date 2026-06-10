@@ -1,0 +1,18 @@
+{
+  "name": "Sufi Elemental Breathing",
+  "short_name": "Breathe",
+  "description": "A guided breathing exercise through the five Sufi elements — Earth, Water, Fire, Air, and Ether.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#06070b",
+  "theme_color": "#06070b",
+  "categories": ["health", "lifestyle", "wellness"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

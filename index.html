@@ -2,9 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<meta name="theme-color" content="#06070b" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>Sufi Elemental Breathing</title>
+
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#06070b" />
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Breathe" />
+<meta name="description" content="A guided breathing exercise through the five Sufi elements — Earth, Water, Fire, Air, and Ether." />
+
 <style>
   @property --c1 { syntax: '<color>'; inherits: true; initial-value: #c9a14a; }
   @property --c2 { syntax: '<color>'; inherits: true; initial-value: #5a3f17; }
@@ -17,26 +27,20 @@
     --fg: #eef1f6; --muted: #9aa3b2;
     --ui-serif: "Cormorant Garamond", ui-serif, Georgia, "Times New Roman", serif;
     --ui-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --safe-t: env(safe-area-inset-top, 0px);
+    --safe-b: env(safe-area-inset-bottom, 0px);
   }
 
   html, body { height: 100%; }
   body {
-    font-family: var(--ui-sans);
-    color: var(--fg);
-    background: #06070b;
-    overflow: hidden;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+    font-family: var(--ui-sans); color: var(--fg); background: #06070b;
+    overflow: hidden; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
   }
 
   #app {
-    position: fixed; inset: 0;
-    display: grid; place-items: center;
+    position: fixed; inset: 0; display: grid; place-items: center;
     transition: --c1 1.4s ease, --c2 1.4s ease, --glow 1.4s ease;
-    background:
-      radial-gradient(135% 105% at 50% 18%,
-        color-mix(in srgb, var(--c1) 30%, #07080d) 0%,
-        #06070b 58%);
+    background: radial-gradient(135% 105% at 50% 18%, color-mix(in srgb, var(--c1) 30%, #07080d) 0%, #06070b 58%);
   }
   #app::after {
     content: ""; position: absolute; inset: 0; pointer-events: none;
@@ -44,143 +48,18 @@
   }
 
   .screen {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: clamp(18px, 4vw, 40px);
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; width: 100%;
+    padding: calc(clamp(18px,4vw,40px) + var(--safe-t)) clamp(18px,4vw,40px) calc(clamp(18px,4vw,40px) + var(--safe-b));
     opacity: 0; visibility: hidden; transform: translateY(8px);
     transition: opacity .6s ease, transform .6s ease, visibility .6s;
-    width: 100%;
   }
   .screen.active { opacity: 1; visibility: visible; transform: none; }
 
-  /* ---------- Setup ---------- */
-  #setup { overflow-y: auto; }
-  .wrap { width: min(680px, 100%); margin: auto; padding: 8px 2px 32px; }
-  .eyebrow {
-    text-transform: uppercase; letter-spacing: .42em; font-size: 11px;
-    color: var(--muted); text-align: center; margin-bottom: 14px; font-weight: 600;
-  }
-  h1 {
-    font-family: var(--ui-serif); font-weight: 500;
-    font-size: clamp(34px, 7vw, 58px); line-height: 1.04; text-align: center;
-    letter-spacing: .01em; margin-bottom: 12px;
-  }
-  .lede {
-    text-align: center; color: var(--muted); font-size: 15.5px; line-height: 1.6;
-    max-width: 52ch; margin: 0 auto 26px;
-  }
-
-  .cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 9px; margin-bottom: 30px; }
-  @media (max-width: 540px){ .cards { grid-template-columns: repeat(5, 1fr); gap: 6px; } }
-  .card {
-    border: 1px solid rgba(255,255,255,.08);
-    background: rgba(255,255,255,.025);
-    border-radius: 16px; padding: 13px 8px; text-align: center;
-    cursor: pointer; user-select: none;
-    transition: border-color .25s, background .25s, transform .25s, box-shadow .25s, opacity .25s;
-    position: relative;
-  }
-  .card:hover { transform: translateY(-2px); }
-  .card .ico { width: 30px; height: 30px; margin: 0 auto 8px; color: #fff; opacity: .92; }
-  .card .nm { font-size: 12.5px; letter-spacing: .03em; font-weight: 600; }
-  .card .mth { font-size: 9.5px; color: var(--muted); margin-top: 3px; letter-spacing: .02em; }
-  .card.off { opacity: .34; }
-  .card.off .check { opacity: 0; }
-  .card .check {
-    position: absolute; top: 7px; right: 7px; width: 15px; height: 15px;
-    border-radius: 50%; background: currentColor; display: grid; place-items: center;
-    transition: opacity .2s;
-  }
-  .card .check svg { width: 9px; height: 9px; color: #0a0b10; }
-  .card.e-earth { color: #e0b54f; } .card.e-earth.on { border-color: rgba(224,181,79,.5); background: rgba(224,181,79,.09); }
-  .card.e-water { color: #46c7b6; } .card.e-water.on { border-color: rgba(70,199,182,.5); background: rgba(70,199,182,.09); }
-  .card.e-fire  { color: #ff7a52; } .card.e-fire.on  { border-color: rgba(255,122,82,.5);  background: rgba(255,122,82,.09); }
-  .card.e-air   { color: #82a9ff; } .card.e-air.on   { border-color: rgba(130,169,255,.5); background: rgba(130,169,255,.09); }
-  .card.e-ether { color: #b89cf0; } .card.e-ether.on { border-color: rgba(184,156,240,.5); background: rgba(184,156,240,.09); }
-
-  .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; margin-bottom: 8px; }
-  @media (max-width: 540px){ .controls-grid { grid-template-columns: 1fr; gap: 14px; } }
-  .field { }
-  .field .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-  .field label { font-size: 13.5px; letter-spacing: .02em; color: #d6dbe4; font-weight: 500; }
-  .field .val { font-variant-numeric: tabular-nums; font-size: 13.5px; color: var(--fg); font-weight: 600; }
-  .field .val small { color: var(--muted); font-weight: 400; font-size: 11.5px; }
-
-  input[type="range"] {
-    -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 4px;
-    background: rgba(255,255,255,.13); outline: none; cursor: pointer;
-  }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%;
-    background: #fff; border: none; box-shadow: 0 1px 6px rgba(0,0,0,.5);
-    transition: transform .15s;
-  }
-  input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.18); }
-  input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #fff; border: none; }
-
-  .toggle-row {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-top: 22px; padding: 14px 16px; border-radius: 14px;
-    border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.025);
-  }
-  .toggle-row .lbl { font-size: 13.5px; color: #d6dbe4; }
-  .toggle-row .lbl small { display: block; color: var(--muted); font-size: 11.5px; margin-top: 2px; }
-  .sw { position: relative; width: 46px; height: 26px; flex: 0 0 auto; }
-  .sw input { opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-  .sw .track {
-    position: absolute; inset: 0; border-radius: 20px; background: rgba(255,255,255,.16);
-    transition: background .25s; pointer-events: none;
-  }
-  .sw .knob {
-    position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%;
-    background: #fff; transition: transform .25s; pointer-events: none;
-  }
-  .sw input:checked ~ .track { background: var(--glow); }
-  .sw input:checked ~ .knob { transform: translateX(20px); }
-
-  .vol-wrap { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 0 4px; transition: opacity .3s; }
-  .vol-wrap svg { width: 18px; height: 18px; color: var(--muted); flex: 0 0 auto; }
-
-  .start-row { margin-top: 30px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
-  .btn-primary {
-    font-family: var(--ui-serif); font-size: 21px; letter-spacing: .04em;
-    padding: 15px 52px; border-radius: 40px; border: none; cursor: pointer;
-    color: #0a0b10; background: linear-gradient(180deg, #fff, #d7dce4);
-    box-shadow: 0 8px 30px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.1) inset;
-    transition: transform .2s, box-shadow .2s, opacity .2s;
-  }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.5); }
-  .btn-primary:active { transform: translateY(0); }
-  .btn-primary:disabled { opacity: .4; cursor: not-allowed; transform: none; }
-  .est { color: var(--muted); font-size: 13px; letter-spacing: .03em; }
-  .est b { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
-
-  /* ---------- Session ---------- */
-  #session { justify-content: space-between; padding: clamp(20px, 5vh, 54px) 20px; }
-  .sess-top { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 16px; }
-  .dots { display: flex; gap: 10px; }
-  .dot {
-    width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.2);
-    transition: background .5s, transform .5s, box-shadow .5s;
-  }
-  .dot.done { background: rgba(255,255,255,.45); }
-  .dot.cur { background: var(--glow); transform: scale(1.5); box-shadow: 0 0 12px var(--glow); }
-  .elem-name {
-    font-family: var(--ui-serif); font-size: clamp(26px, 5vw, 38px); font-weight: 500;
-    letter-spacing: .14em; text-transform: uppercase; text-align: center;
-  }
-  .elem-quality { color: var(--muted); font-size: 12.5px; letter-spacing: .28em; text-transform: uppercase; margin-top: -8px; }
-
-  .orb-stage { flex: 1; display: grid; place-items: center; width: 100%; position: relative; }
-  .orb-ring {
-    position: absolute; width: min(330px, 84vmin); aspect-ratio: 1; border-radius: 50%;
-    border: 1px solid color-mix(in srgb, var(--glow) 22%, transparent);
-    opacity: .5;
-  }
-  #orb {
-    width: min(240px, 62vmin); aspect-ratio: 1; border-radius: 50%;
-    display: grid; place-items: center;
-    transform: scale(.5); will-change: transform;
+  /* ---------- shared orb ---------- */
+  .orb {
+    width: min(248px, 62vmin); aspect-ratio: 1; border-radius: 50%;
+    display: grid; place-items: center; position: relative; will-change: transform;
     background: radial-gradient(circle at 38% 30%,
       color-mix(in srgb, var(--glow) 88%, #fff 12%) 0%,
       color-mix(in srgb, var(--c1) 82%, #000 8%) 70%,
@@ -190,49 +69,150 @@
       0 0 30px 2px color-mix(in srgb, var(--glow) 45%, transparent),
       inset 0 0 60px color-mix(in srgb, var(--c2) 60%, transparent);
   }
+  .orb-ring {
+    position: absolute; width: min(340px, 84vmin); aspect-ratio: 1; border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--glow) 22%, transparent); opacity: .5;
+  }
+
+  /* ---------- icon buttons ---------- */
+  .icon-btn {
+    position: absolute; top: calc(18px + var(--safe-t)); width: 48px; height: 48px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.05);
+    display: grid; place-items: center; color: var(--fg); cursor: pointer; z-index: 6;
+    transition: background .2s, border-color .2s, transform .15s;
+  }
+  .icon-btn:hover { background: rgba(255,255,255,.12); transform: translateY(-1px); }
+  .icon-btn.right { right: 20px; } .icon-btn.left { left: 20px; }
+  .icon-btn svg { width: 22px; height: 22px; }
+
+  /* ======================= HOME ======================= */
+  #home { justify-content: center; gap: clamp(16px, 3vh, 30px); }
+  .home-inner { display: flex; flex-direction: column; align-items: center; gap: clamp(16px, 3vh, 30px); width: min(560px, 100%); }
+  .hero { position: relative; display: grid; place-items: center; }
+  #heroOrb { animation: heroBreath 7s ease-in-out infinite; }
+  @keyframes heroBreath { 0%,100% { transform: scale(.9); } 50% { transform: scale(1); } }
+  .hero-icon {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    opacity: 0; transition: opacity 1.4s ease;
+  }
+  .hero-icon.active { opacity: 1; }
+  .hero-icon svg { width: 44%; height: 44%; color: rgba(255,255,255,.96); filter: drop-shadow(0 2px 8px rgba(0,0,0,.3)); }
+
+  .home-title { font-family: var(--ui-serif); font-weight: 500; font-size: clamp(34px, 8vw, 56px); line-height: 1.04; text-align: center; letter-spacing: .01em; }
+  .home-sub { color: var(--muted); text-align: center; font-size: 14.5px; letter-spacing: .05em; max-width: 36ch; margin-top: -6px; }
+
+  .btn-primary {
+    font-family: var(--ui-serif); font-size: 23px; letter-spacing: .05em;
+    padding: 16px 64px; border-radius: 44px; border: none; cursor: pointer;
+    color: #0a0b10; background: linear-gradient(180deg, #fff, #d7dce4);
+    box-shadow: 0 8px 30px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.1) inset;
+    transition: transform .2s, box-shadow .2s, opacity .2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.5); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+  .home-est { color: var(--muted); font-size: 12.5px; letter-spacing: .06em; font-variant-numeric: tabular-nums; margin-top: -4px; }
+  .home-est b { color: var(--fg); font-weight: 600; }
+
+  .sound-row {
+    display: flex; align-items: center; gap: 11px; padding: 9px 10px 9px 18px;
+    border-radius: 40px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.03);
+  }
+  .sound-row .ico { width: 18px; height: 18px; color: var(--muted); display: grid; place-items: center; }
+  .sound-row .lbl { font-size: 13.5px; letter-spacing: .04em; color: #d6dbe4; }
+
+  /* ---------- switch ---------- */
+  .sw { position: relative; width: 46px; height: 26px; flex: 0 0 auto; }
+  .sw input { opacity: 0; width: 100%; height: 100%; cursor: pointer; margin: 0; }
+  .sw .track { position: absolute; inset: 0; border-radius: 20px; background: rgba(255,255,255,.16); transition: background .25s; pointer-events: none; }
+  .sw .knob { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform .25s; pointer-events: none; }
+  .sw input:checked ~ .track { background: var(--glow); }
+  .sw input:checked ~ .knob { transform: translateX(20px); }
+
+  /* ======================= SETTINGS ======================= */
+  #settings { justify-content: flex-start; overflow-y: auto; }
+  .settings-wrap { width: min(620px, 100%); margin: 0 auto; padding: calc(64px + var(--safe-t)) 2px calc(40px + var(--safe-b)); }
+  .settings-title { font-family: var(--ui-serif); font-weight: 500; font-size: 30px; text-align: center; margin-bottom: 6px; }
+  .settings-tag { text-align: center; color: var(--muted); font-size: 12.5px; letter-spacing: .06em; margin-bottom: 26px; }
+  .sec-label { text-transform: uppercase; letter-spacing: .28em; font-size: 10.5px; color: var(--muted); font-weight: 600; margin: 26px 0 14px; }
+
+  .cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .card {
+    border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.025);
+    border-radius: 16px; padding: 13px 6px; text-align: center; cursor: pointer; user-select: none;
+    transition: border-color .25s, background .25s, transform .2s, opacity .25s; position: relative;
+  }
+  .card:hover { transform: translateY(-2px); }
+  .card .ico { width: 28px; height: 28px; margin: 0 auto 8px; color: #fff; opacity: .92; }
+  .card .nm { font-size: 12px; letter-spacing: .03em; font-weight: 600; }
+  .card .mth { font-size: 9px; color: var(--muted); margin-top: 3px; }
+  .card.off { opacity: .34; } .card.off .check { opacity: 0; }
+  .card .check { position: absolute; top: 7px; right: 7px; width: 15px; height: 15px; border-radius: 50%; background: currentColor; display: grid; place-items: center; transition: opacity .2s; }
+  .card .check svg { width: 9px; height: 9px; color: #0a0b10; }
+  .card.e-earth { color: #e0b54f; } .card.e-earth.on { border-color: rgba(224,181,79,.5); background: rgba(224,181,79,.09); }
+  .card.e-water { color: #46c7b6; } .card.e-water.on { border-color: rgba(70,199,182,.5); background: rgba(70,199,182,.09); }
+  .card.e-fire  { color: #ff7a52; } .card.e-fire.on  { border-color: rgba(255,122,82,.5);  background: rgba(255,122,82,.09); }
+  .card.e-air   { color: #82a9ff; } .card.e-air.on   { border-color: rgba(130,169,255,.5); background: rgba(130,169,255,.09); }
+  .card.e-ether { color: #b89cf0; } .card.e-ether.on { border-color: rgba(184,156,240,.5); background: rgba(184,156,240,.09); }
+
+  .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
+  @media (max-width: 540px){ .controls-grid { grid-template-columns: 1fr; gap: 14px; } .cards { gap: 6px; } }
+  .field .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .field label { font-size: 13.5px; letter-spacing: .02em; color: #d6dbe4; font-weight: 500; }
+  .field .val { font-variant-numeric: tabular-nums; font-size: 13.5px; color: var(--fg); font-weight: 600; }
+  .field .val small { color: var(--muted); font-weight: 400; font-size: 11.5px; }
+
+  input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 4px; background: rgba(255,255,255,.13); outline: none; cursor: pointer; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #fff; border: none; box-shadow: 0 1px 6px rgba(0,0,0,.5); transition: transform .15s; }
+  input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.18); }
+  input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #fff; border: none; }
+
+  .vol-wrap { display: flex; align-items: center; gap: 12px; transition: opacity .3s; }
+  .vol-wrap svg { width: 18px; height: 18px; color: var(--muted); flex: 0 0 auto; }
+
+  .settings-done { display: block; margin: 32px auto 0; }
+  .btn-ghost { font-size: 15px; letter-spacing: .03em; padding: 13px 34px; border-radius: 40px; cursor: pointer; color: var(--fg); background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.16); transition: background .2s, transform .15s; }
+  .btn-ghost:hover { background: rgba(255,255,255,.12); transform: translateY(-1px); }
+  .btn-ghost.accent { background: var(--glow); color: #0a0b10; border-color: transparent; font-weight: 600; }
+
+  /* ======================= SESSION ======================= */
+  #session { justify-content: space-between; padding-top: calc(clamp(20px,5vh,54px) + var(--safe-t)); padding-bottom: calc(clamp(20px,5vh,54px) + var(--safe-b)); }
+  .sess-top { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .dots { display: flex; gap: 10px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.2); transition: background .5s, transform .5s, box-shadow .5s; }
+  .dot.done { background: rgba(255,255,255,.45); }
+  .dot.cur { background: var(--glow); transform: scale(1.5); box-shadow: 0 0 12px var(--glow); }
+  .elem-name { font-family: var(--ui-serif); font-size: clamp(26px, 5vw, 38px); font-weight: 500; letter-spacing: .14em; text-transform: uppercase; text-align: center; }
+  .elem-quality { color: var(--muted); font-size: 12.5px; letter-spacing: .28em; text-transform: uppercase; margin-top: -8px; }
+
+  .orb-stage { flex: 1; display: grid; place-items: center; width: 100%; position: relative; }
+  #orb { transform: scale(.5); }
   #orbIcon { width: 44%; height: 44%; color: rgba(255,255,255,.96); filter: drop-shadow(0 2px 8px rgba(0,0,0,.3)); }
   #orbIcon svg { width: 100%; height: 100%; }
 
   .sess-bottom { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 22px; }
   .phase { text-align: center; min-height: 76px; }
-  .phase .word {
-    font-family: var(--ui-serif); font-size: clamp(30px, 6vw, 44px); font-weight: 500;
-    letter-spacing: .02em; line-height: 1.1;
-  }
+  .phase .word { font-family: var(--ui-serif); font-size: clamp(30px, 6vw, 44px); font-weight: 500; letter-spacing: .02em; line-height: 1.1; }
   .phase .sub { color: var(--muted); font-size: 14px; letter-spacing: .04em; margin-top: 6px; }
   .breath-count { font-size: 12.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted); font-variant-numeric: tabular-nums; }
 
   .sess-controls { display: flex; gap: 14px; align-items: center; }
-  .ctrl {
-    width: 50px; height: 50px; border-radius: 50%; cursor: pointer;
-    border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.04);
-    display: grid; place-items: center; color: var(--fg);
-    transition: background .2s, border-color .2s, transform .15s;
-  }
+  .ctrl { width: 50px; height: 50px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.04); display: grid; place-items: center; color: var(--fg); transition: background .2s, transform .15s; }
   .ctrl:hover { background: rgba(255,255,255,.1); transform: translateY(-1px); }
-  .ctrl:active { transform: translateY(0); }
-  .ctrl svg { width: 20px; height: 20px; }
-  .ctrl.big { width: 64px; height: 64px; }
-  .ctrl.big svg { width: 26px; height: 26px; }
+  .ctrl svg { width: 20px; height: 20px; } .ctrl.big { width: 64px; height: 64px; } .ctrl.big svg { width: 26px; height: 26px; }
 
-  /* ---------- Done ---------- */
+  /* ======================= DONE ======================= */
   #done .glyph { width: 70px; height: 70px; color: var(--glow); margin-bottom: 24px; opacity: .9; }
   #done h2 { font-family: var(--ui-serif); font-size: clamp(32px, 6vw, 46px); font-weight: 500; margin-bottom: 14px; text-align: center; }
   #done p { color: var(--muted); font-size: 15px; line-height: 1.6; text-align: center; max-width: 44ch; margin-bottom: 30px; }
   #done .done-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
-  .btn-ghost {
-    font-size: 15px; letter-spacing: .03em; padding: 13px 30px; border-radius: 40px; cursor: pointer;
-    color: var(--fg); background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.16);
-    transition: background .2s, transform .15s;
-  }
-  .btn-ghost:hover { background: rgba(255,255,255,.12); transform: translateY(-1px); }
-  .btn-ghost.accent { background: var(--glow); color: #0a0b10; border-color: transparent; font-weight: 600; }
 
-  .credit { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; color: rgba(255,255,255,.28); font-size: 11px; letter-spacing: .04em; }
+  .credit { position: absolute; bottom: calc(14px + var(--safe-b)); left: 0; right: 0; text-align: center; color: rgba(255,255,255,.28); font-size: 11px; letter-spacing: .04em; padding: 0 20px; }
   #timer { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 
   @media (prefers-reduced-motion: reduce) {
     .screen { transition: opacity .2s; }
+    #heroOrb { animation: none; transform: scale(.96); }
   }
 </style>
 </head>
@@ -240,91 +220,82 @@
 <div id="app">
   <div id="timer"></div>
 
-  <!-- ===================== SETUP ===================== -->
-  <section id="setup" class="screen active">
-    <div class="wrap">
-      <div class="eyebrow">Sufi Practice</div>
-      <h1>Elemental Breathing</h1>
-      <p class="lede">
-        A guided purification breath through the elements — Earth, Water, Fire, Air, and Ether.
-        Each element carries its own quality, its own way of breathing, and its own sound.
-        Tap an element to include or omit it.
-      </p>
+  <!-- ===================== HOME ===================== -->
+  <section id="home" class="screen active">
+    <button class="icon-btn right" id="gearBtn" title="Settings" aria-label="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 0 1-4 0v-.09A1.7 1.7 0 0 0 8.5 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 0 1 0-4h.09A1.7 1.7 0 0 0 4.6 8.5a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.56V3a2 2 0 0 1 4 0v.09a1.7 1.7 0 0 0 1 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.56 1H21a2 2 0 0 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"/></svg>
+    </button>
 
+    <div class="home-inner">
+      <div class="hero">
+        <div class="orb-ring"></div>
+        <div id="heroOrb" class="orb"><div id="heroIcons"></div></div>
+      </div>
+      <h1 class="home-title">Elemental<br>Breathing</h1>
+      <p class="home-sub">A guided journey through the five Sufi purification breaths.</p>
+      <button class="btn-primary" id="startBtn">Begin</button>
+      <div class="home-est" id="homeEst"></div>
+      <div class="sound-row">
+        <span class="ico" id="soundIcon"></span>
+        <span class="lbl">Sound</span>
+        <label class="sw">
+          <input type="checkbox" id="soundToggle" checked />
+          <span class="track"></span><span class="knob"></span>
+        </label>
+      </div>
+    </div>
+    <div class="credit">In the lineage of the Sufi purification breaths · Inayat Khan tradition</div>
+  </section>
+
+  <!-- ===================== SETTINGS ===================== -->
+  <section id="settings" class="screen">
+    <button class="icon-btn left" id="backBtn" title="Back" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <div class="settings-wrap">
+      <div class="settings-title">Settings</div>
+      <div class="settings-tag">Shape the rhythm of your practice</div>
+
+      <div class="sec-label">Elements &middot; tap to include</div>
       <div class="cards" id="cards"></div>
 
+      <div class="sec-label">Rhythm</div>
       <div class="controls-grid">
         <div class="field">
-          <div class="row">
-            <label for="breaths">Breaths per element</label>
-            <span class="val" id="breathsVal">5</span>
-          </div>
+          <div class="row"><label for="breaths">Breaths per element</label><span class="val" id="breathsVal">5</span></div>
           <input type="range" id="breaths" min="1" max="20" step="1" value="5" />
         </div>
-
         <div class="field">
-          <div class="row">
-            <label for="pace">Breath length</label>
-            <span class="val" id="paceVal">8<small>s / breath</small></span>
-          </div>
+          <div class="row"><label for="pace">Breath length</label><span class="val" id="paceVal">8<small>s / breath</small></span></div>
           <input type="range" id="pace" min="4" max="20" step="1" value="8" />
         </div>
-
         <div class="field">
-          <div class="row">
-            <label for="inhale">Inhale</label>
-            <span class="val" id="inhaleVal">4.0<small>s</small></span>
-          </div>
+          <div class="row"><label for="inhale">Inhale</label><span class="val" id="inhaleVal">4.0<small>s</small></span></div>
           <input type="range" id="inhale" min="2" max="12" step="0.5" value="4" />
         </div>
-
         <div class="field">
-          <div class="row">
-            <label for="exhale">Exhale</label>
-            <span class="val" id="exhaleVal">4.0<small>s</small></span>
-          </div>
+          <div class="row"><label for="exhale">Exhale</label><span class="val" id="exhaleVal">4.0<small>s</small></span></div>
           <input type="range" id="exhale" min="2" max="12" step="0.5" value="4" />
         </div>
-
         <div class="field">
-          <div class="row">
-            <label for="holdIn">Hold after inhale</label>
-            <span class="val" id="holdInVal">0<small>s</small></span>
-          </div>
+          <div class="row"><label for="holdIn">Hold after inhale</label><span class="val" id="holdInVal">0<small>s</small></span></div>
           <input type="range" id="holdIn" min="0" max="10" step="0.5" value="0" />
         </div>
-
         <div class="field">
-          <div class="row">
-            <label for="holdOut">Hold after exhale</label>
-            <span class="val" id="holdOutVal">0<small>s</small></span>
-          </div>
+          <div class="row"><label for="holdOut">Hold after exhale</label><span class="val" id="holdOutVal">0<small>s</small></span></div>
           <input type="range" id="holdOut" min="0" max="10" step="0.5" value="0" />
         </div>
       </div>
 
-      <div class="toggle-row">
-        <div class="lbl">
-          Element sounds
-          <small>Synthesized earth, water, fire, wind &amp; ether tones</small>
-        </div>
-        <label class="sw">
-          <input type="checkbox" id="sound" checked />
-          <span class="track"></span><span class="knob"></span>
-        </label>
-      </div>
-
+      <div class="sec-label">Volume</div>
       <div class="vol-wrap" id="volWrap">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
         <input type="range" id="volume" min="0" max="100" step="1" value="60" />
       </div>
 
-      <div class="start-row">
-        <button class="btn-primary" id="startBtn">Begin</button>
-        <div class="est">Approx. <b id="estTime">2:40</b> &middot; <span id="estDetail">5 elements</span></div>
-      </div>
+      <div class="settings-tag" style="margin:24px 0 0;">Approx. <b id="estTime" style="color:var(--fg)">2:40</b> &middot; <span id="estDetail">5 elements</span></div>
+      <button class="btn-ghost accent settings-done" id="doneSettingsBtn">Done</button>
     </div>
-    <div class="credit">In the lineage of the Sufi purification breaths · Inayat Khan tradition</div>
   </section>
 
   <!-- ===================== SESSION ===================== -->
@@ -336,12 +307,10 @@
         <div class="elem-quality" id="elemQuality">Stability · Grounding</div>
       </div>
     </div>
-
     <div class="orb-stage">
       <div class="orb-ring"></div>
-      <div id="orb"><div id="orbIcon"></div></div>
+      <div id="orb" class="orb"><div id="orbIcon"></div></div>
     </div>
-
     <div class="sess-bottom">
       <div class="phase">
         <div class="word" id="phaseWord">Breathe In</div>
@@ -349,15 +318,9 @@
       </div>
       <div class="breath-count" id="breathCount">Breath 1 of 5</div>
       <div class="sess-controls">
-        <button class="ctrl" id="stopBtn" title="End (Esc)">
-          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
-        </button>
-        <button class="ctrl big" id="pauseBtn" title="Pause / Resume (Space)">
-          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="5" width="4" height="14" rx="1.2"/><rect x="13" y="5" width="4" height="14" rx="1.2"/></svg>
-        </button>
-        <button class="ctrl" id="skipBtn" title="Next element (→)">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5l9 7-9 7z"/><rect x="16" y="5" width="3" height="14" rx="1"/></svg>
-        </button>
+        <button class="ctrl" id="stopBtn" title="End (Esc)"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>
+        <button class="ctrl big" id="pauseBtn" title="Pause / Resume (Space)"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="5" width="4" height="14" rx="1.2"/><rect x="13" y="5" width="4" height="14" rx="1.2"/></svg></button>
+        <button class="ctrl" id="skipBtn" title="Next element (→)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5l9 7-9 7z"/><rect x="16" y="5" width="3" height="14" rx="1"/></svg></button>
       </div>
     </div>
   </section>
@@ -377,9 +340,7 @@
 <script>
 "use strict";
 (function () {
-  /* ----------------------------------------------------------------
-     Icons
-  ---------------------------------------------------------------- */
+  /* ---------------- Icons ---------------- */
   const ICONS = {
     earth: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19h18"/><path d="M4.5 19l5-9 3.2 5.5"/><path d="M11.5 19l4.3-7.6L20 19"/><path d="M8 11.4l1.5-1 1.2 1.6"/></svg>`,
     water: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5c2.2 0 2.2 2 4.5 2s2.3-2 4.5-2 2.2 2 4.5 2 2.3-2 4.5-2"/><path d="M3 12.5c2.2 0 2.2 2 4.5 2s2.3-2 4.5-2 2.2 2 4.5 2 2.3-2 4.5-2"/><path d="M3 17.5c2.2 0 2.2 2 4.5 2s2.3-2 4.5-2 2.2 2 4.5 2 2.3-2 4.5-2"/></svg>`,
@@ -387,46 +348,28 @@
     air: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5h10.5a2.5 2.5 0 1 0-2.5-2.6"/><path d="M3 13h13.5a2.7 2.7 0 1 1-2.7 2.8"/><path d="M3 17.5h6.5"/></svg>`,
     ether: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c.9 4 1.9 5 5.8 5.9-3.9.9-4.9 1.9-5.8 5.8-.9-3.9-1.9-4.9-5.8-5.8 3.9-.9 4.9-1.9 5.8-5.9z"/><path d="M18.5 15.5c.4 1.6.8 2 2.4 2.4-1.6.4-2 .8-2.4 2.4-.4-1.6-.8-2-2.4-2.4 1.6-.4 2-.8 2.4-2.4z"/><path d="M6 16c.3 1.1.5 1.3 1.6 1.6-1.1.3-1.3.5-1.6 1.6-.3-1.1-.5-1.3-1.6-1.6 1.1-.3 1.3-.5 1.6-1.6z"/></svg>`,
     check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4 4 10-10"/></svg>`,
+    soundOn: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>`,
+    soundOff: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>`,
   };
 
-  /* ----------------------------------------------------------------
-     Elements  (Sufi purification-breath methods + qualities)
-  ---------------------------------------------------------------- */
+  /* ---------------- Elements ---------------- */
   const ELEMENTS = [
-    { id:"earth", name:"Earth", quality:"Stability · Grounding",
-      inhale:"nose", exhale:"nose",
-      visualize:"Draw the magnetic strength of the earth up through your body.",
-      c1:"#c9a14a", c2:"#5a3f17", glow:"#e0b54f" },
-    { id:"water", name:"Water", quality:"Flow · Purification",
-      inhale:"nose", exhale:"mouth",
-      visualize:"Feel a cool current washing down, cleansing all it touches.",
-      c1:"#2e9e8f", c2:"#0d3b3a", glow:"#46c7b6" },
-    { id:"fire", name:"Fire", quality:"Energy · Transformation",
-      inhale:"mouth", exhale:"nose",
-      visualize:"Sense a warm radiance glowing outward from your heart.",
-      c1:"#e2603b", c2:"#6f1c10", glow:"#ff7a52" },
-    { id:"air", name:"Air", quality:"Freedom · Expansion",
-      inhale:"mouth", exhale:"mouth",
-      visualize:"Expand into spacious, weightless openness in every direction.",
-      c1:"#5b8def", c2:"#1e3a6b", glow:"#82a9ff" },
-    { id:"ether", name:"Ether", quality:"Spaciousness · Peace",
-      inhale:"soft", exhale:"soft",
-      visualize:"Dissolve into the boundless space that holds all things.",
-      c1:"#9b7fd4", c2:"#2e2150", glow:"#b89cf0" },
+    { id:"earth", name:"Earth", quality:"Stability · Grounding", inhale:"nose",  exhale:"nose",
+      visualize:"Draw the magnetic strength of the earth up through your body.", c1:"#c9a14a", c2:"#5a3f17", glow:"#e0b54f" },
+    { id:"water", name:"Water", quality:"Flow · Purification",   inhale:"nose",  exhale:"mouth",
+      visualize:"Feel a cool current washing down, cleansing all it touches.",    c1:"#2e9e8f", c2:"#0d3b3a", glow:"#46c7b6" },
+    { id:"fire",  name:"Fire",  quality:"Energy · Transformation", inhale:"mouth", exhale:"nose",
+      visualize:"Sense a warm radiance glowing outward from your heart.",         c1:"#e2603b", c2:"#6f1c10", glow:"#ff7a52" },
+    { id:"air",   name:"Air",   quality:"Freedom · Expansion",    inhale:"mouth", exhale:"mouth",
+      visualize:"Expand into spacious, weightless openness in every direction.",  c1:"#5b8def", c2:"#1e3a6b", glow:"#82a9ff" },
+    { id:"ether", name:"Ether", quality:"Spaciousness · Peace",   inhale:"soft",  exhale:"soft",
+      visualize:"Dissolve into the boundless space that holds all things.",       c1:"#9b7fd4", c2:"#2e2150", glow:"#b89cf0" },
   ];
+  const methodText = (m) => m === "nose" ? "through the nose" : m === "mouth" ? "through the mouth" : "softly, with parted lips";
 
-  const methodText = (m) => m === "nose" ? "through the nose"
-                          : m === "mouth" ? "through the mouth"
-                          : "softly, with parted lips";
-
-  /* ----------------------------------------------------------------
-     Audio engine — synthesized element textures (Web Audio API)
-  ---------------------------------------------------------------- */
+  /* ---------------- Audio engine (synthesized element textures) ---------------- */
   class AudioEngine {
-    constructor() {
-      this.ctx = null; this.master = null; this.noise = null;
-      this.current = null; this.volume = 0.6; this.enabled = true;
-    }
+    constructor() { this.ctx=null; this.master=null; this.noise=null; this.current=null; this.volume=0.6; this.enabled=true; }
     ensure() {
       if (this.ctx) return;
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -443,24 +386,14 @@
     start() { this.ensure(); if (this.ctx.state === "suspended") this.ctx.resume(); }
     suspend() { if (this.ctx) return this.ctx.suspend(); }
     resume() { if (this.ctx) return this.ctx.resume(); }
-    setVolume(v) {
-      this.volume = v;
-      if (this.master && this.enabled)
-        this.master.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05);
-    }
-    setEnabled(b) {
-      this.enabled = b;
-      if (this.master)
-        this.master.gain.setTargetAtTime(b ? this.volume : 0, this.ctx.currentTime, 0.05);
-    }
+    setVolume(v) { this.volume = v; if (this.master && this.enabled) this.master.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05); }
+    setEnabled(b) { this.enabled = b; if (this.master) this.master.gain.setTargetAtTime(b ? this.volume : 0, this.ctx.currentTime, 0.05); }
     _src() { const s = this.ctx.createBufferSource(); s.buffer = this.noise; s.loop = true; s.start(); return s; }
 
     setElement(id) {
       if (!this.ctx) return;
       this.stopElement();
-      const level = this.ctx.createGain();
-      level.gain.value = 0;
-      level.connect(this.master);
+      const level = this.ctx.createGain(); level.gain.value = 0; level.connect(this.master);
       let parts = { oscs: [], timers: [] };
       try {
         if (id === "earth") parts = this._earth(level);
@@ -479,170 +412,126 @@
       const { level, parts } = this.current; this.current = null;
       parts.timers.forEach(clearInterval);
       const t = this.ctx.currentTime;
-      try {
-        level.gain.cancelScheduledValues(t);
-        level.gain.setValueAtTime(level.gain.value, t);
-        level.gain.linearRampToValueAtTime(0.0001, t + 0.9);
-      } catch (e) {}
+      try { level.gain.cancelScheduledValues(t); level.gain.setValueAtTime(level.gain.value, t); level.gain.linearRampToValueAtTime(0.0001, t + 0.9); } catch (e) {}
       setTimeout(() => {
         parts.oscs.forEach((o) => { try { o.stop(); } catch (e) {} try { o.disconnect(); } catch (e) {} });
         try { level.disconnect(); } catch (e) {}
       }, 1200);
     }
-
     _earth(level) {
       const ctx = this.ctx;
       const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 220; lp.Q.value = 0.6;
-      const tone = ctx.createGain(); tone.gain.value = 0.85;
-      lp.connect(tone); tone.connect(level);
+      const tone = ctx.createGain(); tone.gain.value = 0.85; lp.connect(tone); tone.connect(level);
       const spec = [[55,"sine",0.55],[55.3,"sine",0.3],[82.5,"triangle",0.16],[110,"sine",0.08]];
-      const oscs = spec.map(([f,type,g]) => {
-        const o = ctx.createOscillator(); o.type = type; o.frequency.value = f;
-        const og = ctx.createGain(); og.gain.value = g;
-        o.connect(og); og.connect(lp); o.start(); return o;
-      });
-      const lfo = ctx.createOscillator(); lfo.frequency.value = 0.07;
-      const lg = ctx.createGain(); lg.gain.value = 0.12;
-      lfo.connect(lg); lg.connect(tone.gain); lfo.start(); oscs.push(lfo);
+      const oscs = spec.map(([f,type,g]) => { const o=ctx.createOscillator(); o.type=type; o.frequency.value=f; const og=ctx.createGain(); og.gain.value=g; o.connect(og); og.connect(lp); o.start(); return o; });
+      const lfo = ctx.createOscillator(); lfo.frequency.value = 0.07; const lg = ctx.createGain(); lg.gain.value = 0.12; lfo.connect(lg); lg.connect(tone.gain); lfo.start(); oscs.push(lfo);
       return { oscs, timers: [] };
     }
     _water(level) {
       const ctx = this.ctx, src = this._src();
-      const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 900; bp.Q.value = 0.8;
-      const bp2 = ctx.createBiquadFilter(); bp2.type = "bandpass"; bp2.frequency.value = 430; bp2.Q.value = 1.1;
-      const g = ctx.createGain(); g.gain.value = 0.5;
-      src.connect(bp); bp.connect(g); src.connect(bp2); bp2.connect(g); g.connect(level);
-      const l1 = ctx.createOscillator(); l1.frequency.value = 0.5;
-      const lg1 = ctx.createGain(); lg1.gain.value = 320; l1.connect(lg1); lg1.connect(bp.frequency); l1.start();
-      const l2 = ctx.createOscillator(); l2.frequency.value = 0.23;
-      const lg2 = ctx.createGain(); lg2.gain.value = 120; l2.connect(lg2); lg2.connect(bp2.frequency); l2.start();
-      const timers = [ setInterval(() => { if (Math.random() < 0.55) this._drip(level); }, 850) ];
-      return { oscs: [src, l1, l2], timers };
+      const bp = ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=900; bp.Q.value=0.8;
+      const bp2 = ctx.createBiquadFilter(); bp2.type="bandpass"; bp2.frequency.value=430; bp2.Q.value=1.1;
+      const g = ctx.createGain(); g.gain.value=0.5; src.connect(bp); bp.connect(g); src.connect(bp2); bp2.connect(g); g.connect(level);
+      const l1=ctx.createOscillator(); l1.frequency.value=0.5; const lg1=ctx.createGain(); lg1.gain.value=320; l1.connect(lg1); lg1.connect(bp.frequency); l1.start();
+      const l2=ctx.createOscillator(); l2.frequency.value=0.23; const lg2=ctx.createGain(); lg2.gain.value=120; l2.connect(lg2); lg2.connect(bp2.frequency); l2.start();
+      const timers=[ setInterval(()=>{ if(Math.random()<0.55) this._drip(level); }, 850) ];
+      return { oscs:[src,l1,l2], timers };
     }
     _drip(dest) {
-      const ctx = this.ctx, t = ctx.currentTime;
-      const o = ctx.createOscillator(); o.type = "sine";
-      const f = 580 + Math.random() * 520;
-      o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(f * 0.5, t + 0.12);
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.1, t + 0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
-      o.connect(g); g.connect(dest); o.start(t); o.stop(t + 0.3);
+      const ctx=this.ctx, t=ctx.currentTime; const o=ctx.createOscillator(); o.type="sine";
+      const f=580+Math.random()*520; o.frequency.setValueAtTime(f,t); o.frequency.exponentialRampToValueAtTime(f*0.5,t+0.12);
+      const g=ctx.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.1,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+0.25);
+      o.connect(g); g.connect(dest); o.start(t); o.stop(t+0.3);
     }
     _fire(level) {
-      const ctx = this.ctx, src = this._src();
-      const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 440; lp.Q.value = 0.7;
-      const g = ctx.createGain(); g.gain.value = 0.3;
-      src.connect(lp); lp.connect(g); g.connect(level);
-      const lfo = ctx.createOscillator(); lfo.frequency.value = 0.6;
-      const lg = ctx.createGain(); lg.gain.value = 0.12; lfo.connect(lg); lg.connect(g.gain); lfo.start();
-      const timers = [ setInterval(() => {
-        const n = 1 + Math.floor(Math.random() * 3);
-        for (let i = 0; i < n; i++) setTimeout(() => this._crackle(level), Math.random() * 190);
-      }, 230) ];
-      return { oscs: [src, lfo], timers };
+      const ctx=this.ctx, src=this._src();
+      const lp=ctx.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=440; lp.Q.value=0.7;
+      const g=ctx.createGain(); g.gain.value=0.3; src.connect(lp); lp.connect(g); g.connect(level);
+      const lfo=ctx.createOscillator(); lfo.frequency.value=0.6; const lg=ctx.createGain(); lg.gain.value=0.12; lfo.connect(lg); lg.connect(g.gain); lfo.start();
+      const timers=[ setInterval(()=>{ const n=1+Math.floor(Math.random()*3); for(let i=0;i<n;i++) setTimeout(()=>this._crackle(level), Math.random()*190); }, 230) ];
+      return { oscs:[src,lfo], timers };
     }
     _crackle(dest) {
-      const ctx = this.ctx, t = ctx.currentTime;
-      const s = ctx.createBufferSource(); s.buffer = this.noise; s.loop = false;
-      const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 2600 + Math.random() * 2200;
-      const g = ctx.createGain();
-      const dur = 0.02 + Math.random() * 0.05;
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.05 + Math.random() * 0.08, t + 0.004);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      const ctx=this.ctx, t=ctx.currentTime; const s=ctx.createBufferSource(); s.buffer=this.noise; s.loop=false;
+      const hp=ctx.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=2600+Math.random()*2200;
+      const g=ctx.createGain(); const dur=0.02+Math.random()*0.05;
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.05+Math.random()*0.08,t+0.004); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
       s.connect(hp); hp.connect(g); g.connect(dest);
-      const off = Math.random() * (this.noise.duration - dur - 0.02);
-      try { s.start(t, off, dur + 0.03); } catch (e) {}
+      const off=Math.random()*(this.noise.duration-dur-0.02); try { s.start(t,off,dur+0.03); } catch(e) {}
     }
     _air(level) {
-      const ctx = this.ctx, src = this._src();
-      const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 820; bp.Q.value = 3.5;
-      const g = ctx.createGain(); g.gain.value = 0.26;
-      src.connect(bp); bp.connect(g); g.connect(level);
-      const l1 = ctx.createOscillator(); l1.frequency.value = 0.13;
-      const lg1 = ctx.createGain(); lg1.gain.value = 360; l1.connect(lg1); lg1.connect(bp.frequency); l1.start();
-      const l2 = ctx.createOscillator(); l2.frequency.value = 0.19;
-      const lg2 = ctx.createGain(); lg2.gain.value = 0.17; l2.connect(lg2); lg2.connect(g.gain); l2.start();
-      return { oscs: [src, l1, l2], timers: [] };
+      const ctx=this.ctx, src=this._src();
+      const bp=ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=820; bp.Q.value=3.5;
+      const g=ctx.createGain(); g.gain.value=0.26; src.connect(bp); bp.connect(g); g.connect(level);
+      const l1=ctx.createOscillator(); l1.frequency.value=0.13; const lg1=ctx.createGain(); lg1.gain.value=360; l1.connect(lg1); lg1.connect(bp.frequency); l1.start();
+      const l2=ctx.createOscillator(); l2.frequency.value=0.19; const lg2=ctx.createGain(); lg2.gain.value=0.17; l2.connect(lg2); lg2.connect(g.gain); l2.start();
+      return { oscs:[src,l1,l2], timers:[] };
     }
     _ether(level) {
-      const ctx = this.ctx;
-      const out = ctx.createGain(); out.gain.value = 0.5; out.connect(level);
-      const base = [660, 880, 1320, 1760];
-      const oscs = [];
-      base.forEach((f, i) => {
-        const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = f;
-        const g = ctx.createGain(); g.gain.value = 0.05 / (i * 0.5 + 1);
-        const trem = ctx.createOscillator(); trem.frequency.value = 0.2 + i * 0.07;
-        const tg = ctx.createGain(); tg.gain.value = g.gain.value * 0.7;
-        trem.connect(tg); tg.connect(g.gain); trem.start();
-        o.connect(g); g.connect(out); o.start();
-        oscs.push(o, trem);
-      });
-      const timers = [ setInterval(() => {
-        if (Math.random() < 0.5) this._bell(out, 1320 * (1 + Math.floor(Math.random() * 3) * 0.5), 0.05);
-      }, 2600) ];
+      const ctx=this.ctx; const out=ctx.createGain(); out.gain.value=0.5; out.connect(level);
+      const base=[660,880,1320,1760]; const oscs=[];
+      base.forEach((f,i)=>{ const o=ctx.createOscillator(); o.type="sine"; o.frequency.value=f; const g=ctx.createGain(); g.gain.value=0.05/(i*0.5+1);
+        const trem=ctx.createOscillator(); trem.frequency.value=0.2+i*0.07; const tg=ctx.createGain(); tg.gain.value=g.gain.value*0.7; trem.connect(tg); tg.connect(g.gain); trem.start();
+        o.connect(g); g.connect(out); o.start(); oscs.push(o,trem); });
+      const timers=[ setInterval(()=>{ if(Math.random()<0.5) this._bell(out, 1320*(1+Math.floor(Math.random()*3)*0.5), 0.05); }, 2600) ];
       return { oscs, timers };
     }
-    _bell(dest, freq, peak = 0.12, dur = 2.2) {
-      const ctx = this.ctx, t = ctx.currentTime;
-      const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = freq;
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(peak, t + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-      o.connect(g); g.connect(dest); o.start(t); o.stop(t + dur + 0.1);
+    _bell(dest, freq, peak=0.12, dur=2.2) {
+      const ctx=this.ctx, t=ctx.currentTime; const o=ctx.createOscillator(); o.type="sine"; o.frequency.value=freq;
+      const g=ctx.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(peak,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g); g.connect(dest); o.start(t); o.stop(t+dur+0.1);
     }
-    chime(freqs, dur = 2.4) {
-      if (!this.ctx) return;
-      const t = this.ctx.currentTime;
-      freqs.forEach((f, i) => {
-        const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = f;
-        const g = this.ctx.createGain(); const s = t + i * 0.09;
-        g.gain.setValueAtTime(0.0001, s);
-        g.gain.exponentialRampToValueAtTime(0.11, s + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, s + dur);
-        o.connect(g); g.connect(this.master); o.start(s); o.stop(s + dur + 0.1);
-      });
+    chime(freqs, dur=2.4) {
+      if (!this.ctx) return; const t=this.ctx.currentTime;
+      freqs.forEach((f,i)=>{ const o=this.ctx.createOscillator(); o.type="sine"; o.frequency.value=f; const g=this.ctx.createGain(); const s=t+i*0.09;
+        g.gain.setValueAtTime(0.0001,s); g.gain.exponentialRampToValueAtTime(0.11,s+0.02); g.gain.exponentialRampToValueAtTime(0.0001,s+dur);
+        o.connect(g); g.connect(this.master); o.start(s); o.stop(s+dur+0.1); });
     }
   }
   const audio = new AudioEngine();
 
-  /* ----------------------------------------------------------------
-     DOM refs
-  ---------------------------------------------------------------- */
+  /* ---------------- DOM ---------------- */
   const $ = (id) => document.getElementById(id);
   const app = $("app");
-  const screens = { setup: $("setup"), session: $("session"), done: $("done") };
+  const screens = { home: $("home"), settings: $("settings"), session: $("session"), done: $("done") };
   const timerEl = $("timer");
   const orb = $("orb");
+  const STORE = "elemental-breath-settings";
 
-  /* ----------------------------------------------------------------
-     Setup screen
-  ---------------------------------------------------------------- */
-  const selected = new Set(ELEMENTS.map((e) => e.id));
+  function applyTheme(el) {
+    app.style.setProperty("--c1", el.c1); app.style.setProperty("--c2", el.c2); app.style.setProperty("--glow", el.glow);
+  }
+  function show(name) {
+    Object.values(screens).forEach((s) => s.classList.remove("active"));
+    screens[name].classList.add("active");
+  }
+
+  /* ---------------- Home: cycling element icons ---------------- */
+  const heroIcons = $("heroIcons");
+  heroIcons.innerHTML = ELEMENTS.map((e,i) => `<div class="hero-icon" data-i="${i}">${ICONS[e.id]}</div>`).join("");
+  const heroLayers = [...heroIcons.children];
+  let heroIdx = 0, heroTimer = null;
+  function setHero(i) { heroLayers.forEach((l,k)=>l.classList.toggle("active", k===i)); applyTheme(ELEMENTS[i]); }
+  function startHero() { setHero(heroIdx); if (heroTimer) return; heroTimer = setInterval(() => { heroIdx = (heroIdx+1)%ELEMENTS.length; setHero(heroIdx); }, 3600); }
+  function stopHero() { if (heroTimer) { clearInterval(heroTimer); heroTimer = null; } }
+
+  /* ---------------- Settings ---------------- */
+  const selected = new Set(ELEMENTS.map((e)=>e.id));
   const cardsEl = $("cards");
   ELEMENTS.forEach((el) => {
     const c = document.createElement("div");
-    c.className = `card e-${el.id} on`;
-    c.dataset.id = el.id;
-    c.innerHTML = `
-      <span class="check">${ICONS.check}</span>
-      <div class="ico">${ICONS[el.id]}</div>
-      <div class="nm">${el.name}</div>
-      <div class="mth">${el.inhale === el.exhale ? (el.inhale === "soft" ? "soft breath" : el.inhale) : el.inhale + "→" + el.exhale}</div>`;
+    c.className = `card e-${el.id} on`; c.dataset.id = el.id;
+    c.innerHTML = `<span class="check">${ICONS.check}</span><div class="ico">${ICONS[el.id]}</div><div class="nm">${el.name}</div><div class="mth">${el.inhale===el.exhale ? (el.inhale==="soft"?"soft":el.inhale) : el.inhale+"→"+el.exhale}</div>`;
     c.addEventListener("click", () => {
       if (selected.has(el.id)) { selected.delete(el.id); c.classList.add("off"); c.classList.remove("on"); }
       else { selected.add(el.id); c.classList.remove("off"); c.classList.add("on"); }
-      updateEstimate();
+      updateEstimate(); saveSettings();
     });
     cardsEl.appendChild(c);
   });
 
   const sliders = ["breaths","pace","inhale","exhale","holdIn","holdOut","volume"].reduce((a,id)=>(a[id]=$(id),a),{});
-  let linkingPace = false; // guard against feedback loops between pace<->inhale/exhale
+  let linkingPace = false;
 
   function fmtVal() {
     $("breathsVal").textContent = sliders.breaths.value;
@@ -650,223 +539,201 @@
     $("exhaleVal").innerHTML = parseFloat(sliders.exhale.value).toFixed(1) + "<small>s</small>";
     $("holdInVal").innerHTML = parseFloat(sliders.holdIn.value) + "<small>s</small>";
     $("holdOutVal").innerHTML = parseFloat(sliders.holdOut.value) + "<small>s</small>";
-    const total = parseFloat(sliders.inhale.value) + parseFloat(sliders.exhale.value)
-                + parseFloat(sliders.holdIn.value) + parseFloat(sliders.holdOut.value);
+    const total = parseFloat(sliders.inhale.value)+parseFloat(sliders.exhale.value)+parseFloat(sliders.holdIn.value)+parseFloat(sliders.holdOut.value);
     $("paceVal").innerHTML = total.toFixed(total % 1 ? 1 : 0) + "<small>s / breath</small>";
   }
-
-  // "Breath length" slider scales inhale + exhale together (keeps their ratio), holds untouched.
   sliders.pace.addEventListener("input", () => {
     linkingPace = true;
-    const target = parseFloat(sliders.pace.value)
-                 - parseFloat(sliders.holdIn.value) - parseFloat(sliders.holdOut.value);
+    const target = parseFloat(sliders.pace.value) - parseFloat(sliders.holdIn.value) - parseFloat(sliders.holdOut.value);
     const curIn = parseFloat(sliders.inhale.value), curEx = parseFloat(sliders.exhale.value);
     const ratio = curIn / (curIn + curEx || 1);
-    const clamp = (v) => Math.min(12, Math.max(2, Math.round(v * 2) / 2));
-    if (target >= 4) {
-      sliders.inhale.value = clamp(target * ratio);
-      sliders.exhale.value = clamp(target * (1 - ratio));
-    }
-    fmtVal(); updateEstimate(); linkingPace = false;
+    const clamp = (v) => Math.min(12, Math.max(2, Math.round(v*2)/2));
+    if (target >= 4) { sliders.inhale.value = clamp(target*ratio); sliders.exhale.value = clamp(target*(1-ratio)); }
+    fmtVal(); updateEstimate(); saveSettings(); linkingPace = false;
   });
   ["inhale","exhale","holdIn","holdOut"].forEach((id) => {
     sliders[id].addEventListener("input", () => {
       if (!linkingPace) {
-        const total = parseFloat(sliders.inhale.value) + parseFloat(sliders.exhale.value)
-                    + parseFloat(sliders.holdIn.value) + parseFloat(sliders.holdOut.value);
+        const total = parseFloat(sliders.inhale.value)+parseFloat(sliders.exhale.value)+parseFloat(sliders.holdIn.value)+parseFloat(sliders.holdOut.value);
         sliders.pace.value = Math.min(20, Math.max(4, Math.round(total)));
       }
-      fmtVal(); updateEstimate();
+      fmtVal(); updateEstimate(); saveSettings();
     });
   });
-  sliders.breaths.addEventListener("input", () => { fmtVal(); updateEstimate(); });
+  sliders.breaths.addEventListener("input", () => { fmtVal(); updateEstimate(); saveSettings(); });
 
-  // sound
+  /* sound on/off (home) + volume (settings) */
   const volWrap = $("volWrap");
-  $("sound").addEventListener("change", (e) => {
-    audio.setEnabled(e.target.checked);
-    volWrap.style.opacity = e.target.checked ? "1" : ".4";
-    volWrap.style.pointerEvents = e.target.checked ? "auto" : "none";
-  });
-  sliders.volume.addEventListener("input", (e) => audio.setVolume(e.target.value / 100));
+  function reflectSound(on) {
+    $("soundToggle").checked = on;
+    $("soundIcon").innerHTML = on ? ICONS.soundOn : ICONS.soundOff;
+    volWrap.style.opacity = on ? "1" : ".4";
+    volWrap.style.pointerEvents = on ? "auto" : "none";
+    audio.setEnabled(on);
+  }
+  $("soundToggle").addEventListener("change", (e) => { reflectSound(e.target.checked); saveSettings(); });
+  sliders.volume.addEventListener("input", (e) => { audio.setVolume(e.target.value/100); saveSettings(); });
 
-  const INTRO_S = 3; // settling pause before each element's breaths
+  const INTRO_S = 3;
   function readConfig() {
     return {
-      elements: ELEMENTS.filter((e) => selected.has(e.id)),
-      breaths: parseInt(sliders.breaths.value, 10),
-      inhaleMs: parseFloat(sliders.inhale.value) * 1000,
-      exhaleMs: parseFloat(sliders.exhale.value) * 1000,
-      holdInMs: parseFloat(sliders.holdIn.value) * 1000,
-      holdOutMs: parseFloat(sliders.holdOut.value) * 1000,
-      sound: $("sound").checked,
+      elements: ELEMENTS.filter((e)=>selected.has(e.id)),
+      breaths: parseInt(sliders.breaths.value,10),
+      inhaleMs: parseFloat(sliders.inhale.value)*1000, exhaleMs: parseFloat(sliders.exhale.value)*1000,
+      holdInMs: parseFloat(sliders.holdIn.value)*1000, holdOutMs: parseFloat(sliders.holdOut.value)*1000,
+      sound: $("soundToggle").checked,
     };
   }
   function updateEstimate() {
     const cfg = readConfig();
-    const per = cfg.breaths * (cfg.inhaleMs + cfg.exhaleMs + cfg.holdInMs + cfg.holdOutMs) / 1000 + INTRO_S;
+    const per = cfg.breaths*(cfg.inhaleMs+cfg.exhaleMs+cfg.holdInMs+cfg.holdOutMs)/1000 + INTRO_S;
     const total = Math.round(per * cfg.elements.length);
-    const m = Math.floor(total / 60), s = total % 60;
-    $("estTime").textContent = `${m}:${String(s).padStart(2, "0")}`;
+    const m = Math.floor(total/60), s = total%60;
+    const time = `${m}:${String(s).padStart(2,"0")}`;
+    $("estTime").textContent = time;
     const n = cfg.elements.length;
-    $("estDetail").textContent = n === 0 ? "select an element" : `${n} element${n > 1 ? "s" : ""} · ${cfg.breaths} breaths each`;
-    $("startBtn").disabled = n === 0;
-  }
-  fmtVal(); updateEstimate();
-
-  /* ----------------------------------------------------------------
-     Screen switching
-  ---------------------------------------------------------------- */
-  function show(name) {
-    Object.values(screens).forEach((s) => s.classList.remove("active"));
-    screens[name].classList.add("active");
-  }
-  function applyTheme(el) {
-    app.style.setProperty("--c1", el.c1);
-    app.style.setProperty("--c2", el.c2);
-    app.style.setProperty("--glow", el.glow);
+    $("estDetail").textContent = n===0 ? "select an element" : `${n} element${n>1?"s":""} · ${cfg.breaths} breaths each`;
+    $("homeEst").innerHTML = n===0 ? "Select an element in settings" : `${n} element${n>1?"s":""} &middot; ${cfg.breaths} breaths each &middot; <b>~${time}</b>`;
+    $("startBtn").disabled = n===0;
   }
 
-  /* ----------------------------------------------------------------
-     Session controller
-     Each breath phase is a Web Animations API animation on the orb,
-     which gives free pause / resume / cancel.
-  ---------------------------------------------------------------- */
-  const MIN = 0.5, MAX = 1.0;
-  const EASE = "cubic-bezier(0.37, 0, 0.63, 1)"; // ease-in-out-sine
-  let currentAnim = null, paused = false, interrupt = null, running = false;
+  /* ---------------- Persistence ---------------- */
+  function saveSettings() {
+    try {
+      localStorage.setItem(STORE, JSON.stringify({
+        breaths: sliders.breaths.value, inhale: sliders.inhale.value, exhale: sliders.exhale.value,
+        holdIn: sliders.holdIn.value, holdOut: sliders.holdOut.value, volume: sliders.volume.value,
+        sound: $("soundToggle").checked, elements: [...selected],
+      }));
+    } catch (e) {}
+  }
+  function loadSettings() {
+    let s = null; try { s = JSON.parse(localStorage.getItem(STORE)); } catch (e) {}
+    if (s) {
+      if (s.breaths) sliders.breaths.value = s.breaths;
+      if (s.inhale) sliders.inhale.value = s.inhale;
+      if (s.exhale) sliders.exhale.value = s.exhale;
+      if (s.holdIn != null) sliders.holdIn.value = s.holdIn;
+      if (s.holdOut != null) sliders.holdOut.value = s.holdOut;
+      if (s.volume != null) sliders.volume.value = s.volume;
+      if (Array.isArray(s.elements) && s.elements.length) {
+        selected.clear(); s.elements.forEach((id)=>selected.add(id));
+        [...cardsEl.children].forEach((c)=>{ const on = selected.has(c.dataset.id); c.classList.toggle("on",on); c.classList.toggle("off",!on); });
+      }
+      const total = parseFloat(sliders.inhale.value)+parseFloat(sliders.exhale.value)+parseFloat(sliders.holdIn.value)+parseFloat(sliders.holdOut.value);
+      sliders.pace.value = Math.min(20, Math.max(4, Math.round(total)));
+      audio.volume = sliders.volume.value/100;
+      reflectSound(s.sound !== false);
+    } else {
+      reflectSound(true);
+    }
+    fmtVal(); updateEstimate();
+  }
+
+  /* ---------------- Session controller ---------------- */
+  const MIN=0.5, MAX=1.0, EASE="cubic-bezier(0.37, 0, 0.63, 1)";
+  let currentAnim=null, paused=false, interrupt=null, running=false;
 
   function runAnim(target, keyframes, duration, easing) {
-    const a = target.animate(keyframes, { duration: Math.max(1, duration), easing: easing || "linear", fill: "forwards" });
-    currentAnim = a;
-    if (paused) a.pause();
-    return a.finished.then(() => { if (currentAnim === a) currentAnim = null; return true; },
-                            () => { if (currentAnim === a) currentAnim = null; return false; });
+    const a = target.animate(keyframes, { duration: Math.max(1,duration), easing: easing||"linear", fill:"forwards" });
+    currentAnim = a; if (paused) a.pause();
+    return a.finished.then(()=>{ if(currentAnim===a) currentAnim=null; return true; }, ()=>{ if(currentAnim===a) currentAnim=null; return false; });
   }
-  const wait = (ms) => runAnim(timerEl, [{ opacity: 0 }, { opacity: 0 }], ms);
-
-  function setPhase(word, sub) { $("phaseWord").textContent = word; $("phaseSub").textContent = sub || ""; }
-
-  function buildDots(n) {
-    const d = $("dots"); d.innerHTML = "";
-    for (let i = 0; i < n; i++) { const s = document.createElement("div"); s.className = "dot"; d.appendChild(s); }
-  }
-  function markDots(i) {
-    [...$("dots").children].forEach((dot, k) => {
-      dot.className = "dot" + (k < i ? " done" : k === i ? " cur" : "");
-    });
-  }
+  const wait = (ms) => runAnim(timerEl, [{opacity:0},{opacity:0}], ms);
+  function setPhase(word, sub) { $("phaseWord").textContent = word; $("phaseSub").textContent = sub||""; }
+  function buildDots(n) { const d=$("dots"); d.innerHTML=""; for(let i=0;i<n;i++){ const s=document.createElement("div"); s.className="dot"; d.appendChild(s); } }
+  function markDots(i) { [...$("dots").children].forEach((dot,k)=>{ dot.className="dot"+(k<i?" done":k===i?" cur":""); }); }
 
   async function runElement(el, index, cfg) {
     interrupt = null;
-    applyTheme(el);
-    markDots(index);
-    $("elemName").textContent = el.name;
-    $("elemQuality").textContent = el.quality;
-    $("orbIcon").innerHTML = ICONS[el.id];
-    orb.style.transform = `scale(${MIN})`;
-
-    if (cfg.sound) { audio.setElement(el.id); audio.chime([el.id === "ether" ? 880 : 528, 660, 792]); }
-
-    // settling intro
-    setPhase(el.name, el.visualize);
-    $("breathCount").textContent = "Settle in";
-    if (!(await wait(INTRO_S * 1000))) return interrupt || "stop";
-
-    for (let b = 0; b < cfg.breaths; b++) {
-      $("breathCount").textContent = `Breath ${b + 1} of ${cfg.breaths}`;
-
+    applyTheme(el); markDots(index);
+    $("elemName").textContent = el.name; $("elemQuality").textContent = el.quality;
+    $("orbIcon").innerHTML = ICONS[el.id]; orb.style.transform = `scale(${MIN})`;
+    if (cfg.sound) { audio.setElement(el.id); audio.chime([el.id==="ether"?880:528, 660, 792]); }
+    setPhase(el.name, el.visualize); $("breathCount").textContent = "Settle in";
+    if (!(await wait(INTRO_S*1000))) return interrupt || "stop";
+    for (let b=0; b<cfg.breaths; b++) {
+      $("breathCount").textContent = `Breath ${b+1} of ${cfg.breaths}`;
       setPhase("Breathe In", "in " + methodText(el.inhale));
-      if (!(await runAnim(orb, [{ transform:`scale(${MIN})` }, { transform:`scale(${MAX})` }], cfg.inhaleMs, EASE))) return interrupt || "stop";
-
-      if (cfg.holdInMs > 0) {
-        setPhase("Hold", "full and still");
-        if (!(await runAnim(orb, [{ transform:`scale(${MAX})` }, { transform:`scale(${MAX})` }], cfg.holdInMs))) return interrupt || "stop";
-      }
-
+      if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MAX})`}], cfg.inhaleMs, EASE))) return interrupt || "stop";
+      if (cfg.holdInMs > 0) { setPhase("Hold","full and still"); if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MAX})`}], cfg.holdInMs))) return interrupt || "stop"; }
       setPhase("Breathe Out", "out " + methodText(el.exhale));
-      if (!(await runAnim(orb, [{ transform:`scale(${MAX})` }, { transform:`scale(${MIN})` }], cfg.exhaleMs, EASE))) return interrupt || "stop";
-
-      if (cfg.holdOutMs > 0) {
-        setPhase("Hold", "empty and open");
-        if (!(await runAnim(orb, [{ transform:`scale(${MIN})` }, { transform:`scale(${MIN})` }], cfg.holdOutMs))) return interrupt || "stop";
-      }
+      if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MIN})`}], cfg.exhaleMs, EASE))) return interrupt || "stop";
+      if (cfg.holdOutMs > 0) { setPhase("Hold","empty and open"); if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MIN})`}], cfg.holdOutMs))) return interrupt || "stop"; }
     }
     return "done";
   }
 
   async function runSession(cfg) {
-    running = true; paused = false; interrupt = null;
+    stopHero(); running=true; paused=false; interrupt=null;
     buildDots(cfg.elements.length);
     if (cfg.sound) audio.start();
-    show("session");
-    updatePauseIcon();
-
-    for (let i = 0; i < cfg.elements.length; i++) {
+    show("session"); updatePauseIcon();
+    for (let i=0; i<cfg.elements.length; i++) {
       const status = await runElement(cfg.elements[i], i, cfg);
-      if (status === "stop") { running = false; audio.stopElement(); return; }
-      // "skip" or "done" -> continue to next element
+      if (status === "stop") { running=false; audio.stopElement(); return; }
     }
-    // complete
-    [...$("dots").children].forEach((d) => d.className = "dot done");
+    [...$("dots").children].forEach((d)=>d.className="dot done");
     audio.stopElement();
-    if (cfg.sound) audio.chime([523.25, 659.25, 783.99], 3.2); // C major
-    running = false;
-    show("done");
+    if (cfg.sound) audio.chime([523.25, 659.25, 783.99], 3.2);
+    running=false; show("done");
   }
 
-  /* ----------------------------------------------------------------
-     Session controls
-  ---------------------------------------------------------------- */
+  /* ---------------- Session controls ---------------- */
   function updatePauseIcon() {
     $("pauseBtn").innerHTML = paused
       ? `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5l12 7-12 7z"/></svg>`
       : `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="5" width="4" height="14" rx="1.2"/><rect x="13" y="5" width="4" height="14" rx="1.2"/></svg>`;
   }
   function togglePause() {
-    if (!running) return;
-    paused = !paused;
+    if (!running) return; paused = !paused;
     if (paused) { currentAnim && currentAnim.pause(); audio.suspend(); }
     else { currentAnim && currentAnim.play(); audio.resume(); }
     updatePauseIcon();
   }
   function stopSession() {
-    if (!running) return;
-    interrupt = "stop"; running = false;
-    if (paused) { paused = false; audio.resume(); updatePauseIcon(); }
-    currentAnim && currentAnim.cancel();
-    audio.stopElement();
-    show("setup");
+    if (!running) return; interrupt="stop"; running=false;
+    if (paused) { paused=false; audio.resume(); updatePauseIcon(); }
+    currentAnim && currentAnim.cancel(); audio.stopElement();
+    show("home"); startHero();
   }
   function skipElement() {
-    if (!running) return;
-    interrupt = "skip";
-    if (paused) { paused = false; currentAnim && currentAnim.play(); audio.resume(); updatePauseIcon(); }
+    if (!running) return; interrupt="skip";
+    if (paused) { paused=false; currentAnim && currentAnim.play(); audio.resume(); updatePauseIcon(); }
     currentAnim && currentAnim.cancel();
   }
-
   $("pauseBtn").addEventListener("click", togglePause);
   $("stopBtn").addEventListener("click", stopSession);
   $("skipBtn").addEventListener("click", skipElement);
-
   document.addEventListener("keydown", (e) => {
     if (!running) return;
-    if (e.code === "Space") { e.preventDefault(); togglePause(); }
-    else if (e.code === "Escape") { stopSession(); }
-    else if (e.code === "ArrowRight") { skipElement(); }
+    if (e.code==="Space") { e.preventDefault(); togglePause(); }
+    else if (e.code==="Escape") { stopSession(); }
+    else if (e.code==="ArrowRight") { skipElement(); }
   });
 
-  /* ----------------------------------------------------------------
-     Start / restart
-  ---------------------------------------------------------------- */
+  /* ---------------- Navigation ---------------- */
+  $("gearBtn").addEventListener("click", () => { stopHero(); show("settings"); });
+  $("backBtn").addEventListener("click", () => { show("home"); startHero(); });
+  $("doneSettingsBtn").addEventListener("click", () => { show("home"); startHero(); });
   $("startBtn").addEventListener("click", () => {
-    const cfg = readConfig();
-    if (cfg.elements.length === 0) return;
-    if (cfg.sound) audio.start(); // unlock audio on the user gesture
+    const cfg = readConfig(); if (cfg.elements.length===0) return;
+    if (cfg.sound) audio.start();
     runSession(cfg);
   });
   $("againBtn").addEventListener("click", () => runSession(readConfig()));
-  $("adjustBtn").addEventListener("click", () => show("setup"));
+  $("adjustBtn").addEventListener("click", () => { stopHero(); show("settings"); });
+
+  /* ---------------- Init ---------------- */
+  loadSettings();
+  startHero();
+
+  /* ---------------- PWA service worker ---------------- */
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch((e) => console.warn("SW registration failed", e));
+    });
+  }
 })();
 </script>
 </body>
