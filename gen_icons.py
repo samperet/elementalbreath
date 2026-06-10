@@ -1,25 +1,22 @@
 #!/usr/bin/env python3
-"""Generate PWA icons + favicon: the Sufi winged heart centered on a black background."""
+"""Generate PWA icons + favicon: a square crop of the manuscript background
+(the illuminated medallion), at full brightness."""
 from PIL import Image
 
-emblem = Image.open("sufiheart.png").convert("RGBA")
-ew, eh = emblem.size  # 400 x 100
+SRC = Image.open("manuscript.jpg").convert("RGB")
+CX, CY, HALF = 280, 347, 123  # centered on the circular medallion
+CROP = SRC.crop((CX - HALF, CY - HALF, CX + HALF, CY + HALF))
 
-def make(size, frac, path):
-    canvas = Image.new("RGBA", (size, size), (0, 0, 0, 255))
-    tw = max(1, int(round(size * frac)))
-    th = max(1, int(round(tw * eh / ew)))
-    em = emblem.resize((tw, th), Image.LANCZOS)
-    canvas.alpha_composite(em, ((size - tw) // 2, (size - th) // 2))
-    canvas.convert("RGB").save(path)
+def make(size, path):
+    CROP.resize((size, size), Image.LANCZOS).save(path)
     print("wrote", path, f"{size}x{size}")
 
-# Standard icons (a touch of side padding)
-make(512, 0.82, "icon-512.png")
-make(192, 0.82, "icon-192.png")
-make(180, 0.82, "apple-touch-icon.png")
-make(32,  0.88, "favicon-32.png")
-# Maskable icons (keep emblem inside the safe circle)
-make(512, 0.68, "icon-maskable-512.png")
-make(192, 0.68, "icon-maskable-192.png")
+make(512, "icon-512.png")
+make(192, "icon-192.png")
+make(180, "apple-touch-icon.png")
+make(32,  "favicon-32.png")
+# Full-bleed artwork doubles as the maskable variant — the medallion sits
+# inside the safe zone, and any mask shape crops into decoration, not padding.
+make(512, "icon-maskable-512.png")
+make(192, "icon-maskable-192.png")
 print("done")
