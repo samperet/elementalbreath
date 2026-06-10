@@ -173,6 +173,9 @@
   .phase { text-align: center; min-height: 100px; }
   .phase .word { font-family: var(--ui-serif); font-size: clamp(38px, 9vw, 64px); font-weight: 500; letter-spacing: .02em; line-height: 1.06; }
   .phase .sub { font-family: var(--ui-serif); font-style: italic; color: var(--muted); font-size: clamp(15px, 4.4vw, 20px); letter-spacing: .02em; margin-top: 8px; }
+  .phase .dhikr { margin-top: 12px; min-height: 44px; font-family: var(--ui-serif); font-style: italic; font-size: clamp(18px, 5vw, 24px); letter-spacing: .03em; line-height: 1.12; color: color-mix(in srgb, var(--glow) 72%, #fff 28%); opacity: 0; transition: opacity .55s ease; }
+  .phase .dhikr.show { opacity: 1; }
+  .phase .dhikr small { display: block; font-style: normal; font-family: var(--ui-body); font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
   .breath-count { font-size: 12.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted); font-variant-numeric: tabular-nums; }
 
   .sess-controls { display: flex; gap: 14px; align-items: center; }
@@ -280,6 +283,7 @@
       <div class="phase" aria-live="polite">
         <div class="word" id="phaseWord">Breathe In</div>
         <div class="sub" id="phaseSub">through the nose</div>
+        <div class="dhikr" id="phaseDhikr"></div>
       </div>
       <div class="breath-count" id="breathCount" aria-live="polite">Breath 1 of 5</div>
       <div class="sess-controls">
@@ -537,6 +541,13 @@
     return a.finished.then(()=>{ if(currentAnim===a) currentAnim=null; return true; }, ()=>{ if(currentAnim===a) currentAnim=null; return false; });
   }
   function setPhase(word, sub) { $("phaseWord").textContent = word; $("phaseSub").textContent = sub||""; }
+  const DHIKR_IN  = { phrase: "Ya Shafee", trans: "the Healer" };
+  const DHIKR_OUT = { phrase: "Ya Kafiyy", trans: "the Remedy" };
+  function setDhikr(d) {
+    const el = $("phaseDhikr");
+    if (d) { el.innerHTML = `${d.phrase}<small>${d.trans}</small>`; el.classList.add("show"); }
+    else { el.classList.remove("show"); }
+  }
   function buildDots(n) { const d=$("dots"); d.innerHTML=""; for(let i=0;i<n;i++){ const s=document.createElement("div"); s.className="dot"; d.appendChild(s); } }
   function markDots(i) { [...$("dots").children].forEach((dot,k)=>{ dot.className="dot"+(k<i?" done":k===i?" cur":""); }); }
 
@@ -549,12 +560,12 @@
     const outSub = methodText(el.exhale) + (el.refined ? ", very refined" : "");
     for (let b=0; b<cfg.breaths; b++) {
       $("breathCount").textContent = `Breath ${b+1} of ${cfg.breaths}`;
-      setPhase("Breathe In", inSub);
+      setPhase("Breathe In", inSub); setDhikr(DHIKR_IN);
       if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MAX})`}], cfg.inhaleMs, EASE))) return interrupt || "stop";
-      if (cfg.holdInMs > 0) { setPhase("Hold","full and still"); if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MAX})`}], cfg.holdInMs))) return interrupt || "stop"; }
-      setPhase("Breathe Out", outSub);
+      if (cfg.holdInMs > 0) { setPhase("Hold","full and still"); setDhikr(null); if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MAX})`}], cfg.holdInMs))) return interrupt || "stop"; }
+      setPhase("Breathe Out", outSub); setDhikr(DHIKR_OUT);
       if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MIN})`}], cfg.exhaleMs, EASE))) return interrupt || "stop";
-      if (cfg.holdOutMs > 0) { setPhase("Hold","empty and open"); if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MIN})`}], cfg.holdOutMs))) return interrupt || "stop"; }
+      if (cfg.holdOutMs > 0) { setPhase("Hold","empty and open"); setDhikr(null); if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MIN})`}], cfg.holdOutMs))) return interrupt || "stop"; }
     }
     return "done";
   }
