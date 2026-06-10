@@ -38,8 +38,8 @@ Each element has its own traditional breath method (5 breaths each) and a color 
 | `sufiheart.png` | Home emblem (Sufi winged heart) |
 | `manifest.webmanifest` | PWA manifest |
 | `sw.js` | Service worker (offline app shell) |
-| `icon-*.png`, `apple-touch-icon.png`, `favicon-32.png` | App icons |
-| `gen_icons.py` | Regenerates the icons from SVG (`python3 gen_icons.py`) |
+| `icon-*.png`, `apple-touch-icon.png`, `favicon-32.png` | App icons (Sufi wings on black) |
+| `gen_icons.py` | Regenerates the app icons from `sufiheart.png` (`python3 gen_icons.py`) |
 
 ## Controls
 
