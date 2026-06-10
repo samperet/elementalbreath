@@ -181,7 +181,7 @@
   .ctrl svg { width: 20px; height: 20px; } .ctrl.big { width: 64px; height: 64px; } .ctrl.big svg { width: 26px; height: 26px; }
 
   /* ======================= DONE ======================= */
-  #done .glyph { width: 70px; height: 70px; color: var(--glow); margin-bottom: 24px; opacity: .9; }
+  #done .done-heart { width: clamp(200px, 62vw, 320px); height: auto; margin-bottom: 26px; filter: drop-shadow(0 0 16px rgba(224,181,79,.22)); }
   #done h2 { font-family: var(--ui-serif); font-size: clamp(32px, 6vw, 46px); font-weight: 500; margin-bottom: 14px; text-align: center; }
   #done p { color: var(--muted); font-size: 15px; line-height: 1.6; text-align: center; max-width: 44ch; margin-bottom: 30px; }
   #done .done-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
@@ -295,12 +295,11 @@
 
   <!-- ===================== DONE ===================== -->
   <section id="done" class="screen">
-    <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+    <img class="done-heart" src="sufiheart.png" alt="Sufi winged heart" />
     <h2>Practice complete</h2>
     <p>You have breathed through the elements. Rest a moment in the stillness that remains, and carry it gently with you.</p>
     <div class="done-btns">
       <button class="btn-ghost accent" id="againBtn">Begin again</button>
-      <button class="btn-ghost" id="adjustBtn">Adjust settings</button>
     </div>
   </section>
 </div>
@@ -612,7 +611,6 @@
     runSession(cfg);
   });
   $("againBtn").addEventListener("click", () => runSession(readConfig()));
-  $("adjustBtn").addEventListener("click", () => show("settings"));
 
   /* ---------------- Init ---------------- */
   loadSettings();
