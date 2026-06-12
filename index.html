@@ -17,7 +17,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
 
 <style>
   @property --c1 { syntax: '<color>'; inherits: true; initial-value: #c9a14a; }
@@ -189,6 +189,82 @@
   #done p { color: var(--muted); font-size: 15px; line-height: 1.6; text-align: center; max-width: 44ch; margin-bottom: 30px; }
   #done .done-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
 
+  /* ======================= TOP MENU ======================= */
+  #menu { justify-content: center; gap: clamp(22px, 4vh, 42px); }
+  .menu-inner { display: flex; flex-direction: column; align-items: center; gap: clamp(22px, 3.6vh, 38px); width: min(440px, 100%); }
+  .menu-heart { width: clamp(170px, 56vw, 260px); height: auto; filter: drop-shadow(0 0 16px rgba(224,181,79,.22)); }
+  .menu-options { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+  .menu-option {
+    display: flex; align-items: center; gap: 18px; width: 100%; padding: 18px 20px; border-radius: 20px; cursor: pointer; text-align: left;
+    border: 1px solid color-mix(in srgb, var(--glow) 38%, transparent);
+    background: linear-gradient(160deg, rgba(255,255,255,.055), rgba(255,255,255,.02));
+    transition: transform .18s, border-color .2s, box-shadow .2s;
+  }
+  .menu-option:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--glow) 65%, transparent); box-shadow: 0 12px 32px rgba(0,0,0,.4); }
+  .menu-option:active { transform: translateY(0); }
+  .m-emblem { width: 60px; height: 60px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--glow) 30%, transparent); }
+  .orb-mini { width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(circle at 38% 32%, #ffe9b0, #c9a14a 68%, #6b4f1d); box-shadow: 0 0 16px rgba(224,181,79,.55); }
+  .num99 { font-family: "Amiri", serif; font-weight: 700; font-size: 38px; line-height: 1; color: var(--glow); }
+  .m-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .m-label { font-family: var(--ui-serif); font-size: clamp(22px, 6vw, 27px); font-weight: 500; color: var(--fg); letter-spacing: .01em; }
+  .m-desc { font-family: var(--ui-serif); font-style: italic; font-size: 14px; color: var(--muted); }
+  .menu-arrow { margin-left: auto; width: 20px; height: 20px; flex: 0 0 auto; color: var(--muted); }
+
+  /* ======================= WAZIFA FLASHCARDS ======================= */
+  #wazifa { justify-content: flex-start; gap: clamp(8px, 1.6vh, 16px);
+    padding-top: calc(clamp(16px,3.5vh,32px) + var(--safe-t)); padding-bottom: calc(clamp(10px,2vh,20px) + var(--safe-b)); }
+  .wz-head { width: 100%; text-align: center; }
+  .wz-title { font-family: var(--ui-serif); font-size: 24px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; }
+  .wz-progress { font-family: var(--ui-serif); font-style: italic; font-size: 14px; color: var(--muted); margin-top: 1px; font-variant-numeric: tabular-nums; }
+  .wz-stage { flex: 1; min-height: 0; width: 100%; display: grid; place-items: center; position: relative; padding: 8px 0; }
+  .wz-card-behind { position: absolute; width: min(348px, 84vw); aspect-ratio: 5 / 6.6; max-height: 88%;
+    border-radius: 22px; background: linear-gradient(158deg, #e7d9bd, #d2bf98);
+    transform: translateY(16px) scale(.93); opacity: .55; box-shadow: 0 16px 38px rgba(0,0,0,.42); }
+  .wz-card { position: relative; width: min(360px, 86vw); aspect-ratio: 5 / 6.6; max-height: 94%;
+    perspective: 1500px; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; will-change: transform; }
+  .wz-card:active { cursor: grabbing; }
+  .wz-flip { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform .55s cubic-bezier(.4,.08,.3,1); }
+  .wz-card.flipped .wz-flip { transform: rotateY(180deg); }
+  .wz-face { position: absolute; inset: 0; border-radius: 22px; overflow: hidden;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 34px 26px; text-align: center;
+    box-shadow: 0 26px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.18); }
+  .wz-front { background: linear-gradient(158deg, #f8f1e2 0%, #ece0c7 55%, #e2d3b4 100%); }
+  .wz-back { background: linear-gradient(158deg, #1f5040 0%, #163a2d 60%, #0f291f 100%); transform: rotateY(180deg); }
+  .wz-face::before { content: ""; position: absolute; inset: 12px; border-radius: 14px; border: 1.5px solid; pointer-events: none; }
+  .wz-face::after  { content: ""; position: absolute; inset: 17px; border-radius: 10px; border: 1px solid;   pointer-events: none; }
+  .wz-front::before { border-color: rgba(150,116,46,.55); }
+  .wz-front::after  { border-color: rgba(150,116,46,.30); }
+  .wz-back::before  { border-color: rgba(212,176,106,.5); }
+  .wz-back::after   { border-color: rgba(212,176,106,.26); }
+  .wz-num { position: absolute; top: 22px; left: 0; right: 0; font-family: var(--ui-serif); font-style: italic; font-size: 13px; letter-spacing: .1em; font-variant-numeric: tabular-nums; color: rgba(90,66,24,.65); }
+  .wz-ar { font-family: "Amiri", serif; font-weight: 700; font-size: clamp(54px, 17vw, 94px); line-height: 1.18; color: #45341a; direction: rtl; }
+  .wz-divider { width: 66px; height: 16px; margin: 16px 0 13px; color: rgba(150,116,46,.7); }
+  .wz-tr { font-family: var(--ui-serif); font-size: clamp(23px, 6.5vw, 32px); font-weight: 500; color: #6a4f1f; letter-spacing: .02em; }
+  .wz-tap { position: absolute; bottom: 22px; left: 0; right: 0; font-family: var(--ui-body); font-style: italic; font-size: 12.5px; color: rgba(90,66,24,.5); }
+  .wz-back .wz-tr-sm { font-family: var(--ui-serif); font-style: italic; font-size: clamp(18px, 5vw, 22px); color: #d9c79a; margin-bottom: 16px; }
+  .wz-en { font-family: var(--ui-serif); font-size: clamp(27px, 7.2vw, 40px); font-weight: 500; line-height: 1.18; color: #f4ecd8; }
+  .wz-swipe-hint { position: absolute; bottom: 20px; left: 0; right: 0; font-family: var(--ui-body); font-style: italic; font-size: 12px; letter-spacing: .03em; color: rgba(217,199,154,.6); }
+  .wz-badge { position: absolute; top: 26px; padding: 5px 14px; border-radius: 9px; z-index: 4; opacity: 0; transition: opacity .1s;
+    border: 2.5px solid; font-family: var(--ui-serif); font-weight: 600; font-size: 17px; letter-spacing: .14em; text-transform: uppercase; }
+  .wz-badge.known  { right: 26px; transform: rotate(11deg);  color: #4cc483; border-color: #4cc483; }
+  .wz-badge.review { left: 26px;  transform: rotate(-11deg); color: #ff6b6b; border-color: #ff6b6b; }
+  .wz-actions { display: flex; gap: 30px; justify-content: center; }
+  .wz-btn { width: 62px; height: 62px; border-radius: 50%; cursor: pointer; border: 1.5px solid; background: rgba(255,255,255,.04); display: grid; place-items: center; transition: transform .15s, background .2s; }
+  .wz-btn svg { width: 25px; height: 25px; }
+  .wz-btn.review { color: #ff6b6b; border-color: rgba(255,107,107,.5); }
+  .wz-btn.known  { color: #4cc483; border-color: rgba(76,196,131,.5); }
+  .wz-btn:hover { transform: translateY(-2px); background: rgba(255,255,255,.09); }
+  .wz-btn:active { transform: scale(.92); }
+  .wz-summary { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; padding: 36px; }
+  .wz-summary[hidden] { display: none; }
+  .wz-sum-title { font-family: var(--ui-serif); font-size: clamp(30px, 7vw, 44px); font-weight: 500; }
+  .wz-sum-stat { font-family: var(--ui-serif); font-style: italic; font-size: 18px; color: var(--muted); }
+  .wz-sum-stat b { color: var(--fg); font-style: normal; }
+  .wz-sum-btns { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; width: min(280px, 78%); }
+  .wz-sum-btns .btn-ghost { width: 100%; }
+  #wazifa.summary .wz-card, #wazifa.summary .wz-card-behind, #wazifa.summary .wz-actions, #wazifa.summary .wz-progress { display: none; }
+
   @media (prefers-reduced-motion: reduce) {
     .screen { transition: opacity .2s; }
   }
@@ -196,8 +272,37 @@
 </head>
 <body>
 <div id="app">
-  <!-- ===================== HOME ===================== -->
-  <section id="home" class="screen active">
+  <!-- ===================== TOP MENU ===================== -->
+  <section id="menu" class="screen active">
+    <div class="menu-inner">
+      <img class="menu-heart" src="sufiheart.png" alt="Sufi winged heart" />
+      <div class="menu-options">
+        <button class="menu-option" id="toBreathingBtn">
+          <span class="m-emblem"><span class="orb-mini"></span></span>
+          <span class="m-text">
+            <span class="m-label">Elemental Breathing</span>
+            <span class="m-desc">Breathe through the five elements</span>
+          </span>
+          <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <button class="menu-option" id="toWazifaBtn">
+          <span class="m-emblem"><span class="num99">٩٩</span></span>
+          <span class="m-text">
+            <span class="m-label">Wazifas</span>
+            <span class="m-desc">The ninety-nine beautiful names</span>
+          </span>
+          <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="home-footer">Towards the One</div>
+  </section>
+
+  <!-- ===================== HOME (Breathing) ===================== -->
+  <section id="home" class="screen">
+    <button class="icon-btn left" id="homeBackBtn" title="Menu" aria-label="Back to menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
     <button class="icon-btn right" id="gearBtn" title="Settings" aria-label="Settings">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 0 1-4 0v-.09A1.7 1.7 0 0 0 8.5 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 0 1 0-4h.09A1.7 1.7 0 0 0 4.6 8.5a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.56V3a2 2 0 0 1 4 0v.09a1.7 1.7 0 0 0 1 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.56 1H21a2 2 0 0 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"/></svg>
     </button>
@@ -304,6 +409,54 @@
       <button class="btn-ghost" id="homeBtn">Home</button>
     </div>
   </section>
+
+  <!-- ===================== WAZIFA FLASHCARDS ===================== -->
+  <section id="wazifa" class="screen">
+    <button class="icon-btn left" id="wzBackBtn" title="Menu" aria-label="Back to menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <div class="wz-head">
+      <div class="wz-title">Wazifa</div>
+      <div class="wz-progress" id="wzProgress">1 / 99</div>
+    </div>
+    <div class="wz-stage">
+      <div class="wz-card-behind"></div>
+      <div class="wz-card" id="wzCard">
+        <div class="wz-badge known" id="wzBadgeKnown">Known</div>
+        <div class="wz-badge review" id="wzBadgeReview">Review</div>
+        <div class="wz-flip">
+          <div class="wz-face wz-front">
+            <div class="wz-num" id="wzNum"></div>
+            <div class="wz-ar" id="wzAr"></div>
+            <svg class="wz-divider" viewBox="0 0 66 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 8h23M41 8h23"/><path d="M33 2.5l4.5 5.5-4.5 5.5-4.5-5.5z" fill="currentColor" stroke="none"/></svg>
+            <div class="wz-tr" id="wzTr"></div>
+            <div class="wz-tap">tap to reveal</div>
+          </div>
+          <div class="wz-face wz-back">
+            <div class="wz-tr-sm" id="wzTrBack"></div>
+            <div class="wz-en" id="wzEn"></div>
+            <div class="wz-swipe-hint">swipe right · known&nbsp;&nbsp;&nbsp;left · review</div>
+          </div>
+        </div>
+      </div>
+      <div class="wz-summary" id="wzSummary" hidden>
+        <div class="wz-sum-title">Deck complete</div>
+        <div class="wz-sum-stat" id="wzSumStat"></div>
+        <div class="wz-sum-btns">
+          <button class="btn-ghost accent" id="wzReviewMissed">Review missed</button>
+          <button class="btn-ghost" id="wzRestart">Shuffle all 99</button>
+        </div>
+      </div>
+    </div>
+    <div class="wz-actions">
+      <button class="wz-btn review" id="wzReviewBtn" title="Review (←)" aria-label="Mark for review">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <button class="wz-btn known" id="wzKnownBtn" title="Known (→)" aria-label="Mark as known">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+      </button>
+    </div>
+  </section>
 </div>
 
 <script>
@@ -330,6 +483,109 @@
     { id:"ether", name:"Ether", inhale:"nose",  exhale:"nose",  refined:true, c1:"#8b94a4", c2:"#2b303a", glow:"#c2cad6" },
   ];
   const methodText = (m) => m === "nose" ? "through the nose" : m === "mouth" ? "through the mouth" : "softly, with parted lips";
+
+  /* ---------------- Wazifas: the 99 beautiful names ---------------- */
+  const WAZIFAS = [
+    { ar:"الرَّحْمَٰن", tr:"Ar-Rahman", en:"The Most Compassionate" },
+    { ar:"الرَّحِيم", tr:"Ar-Rahim", en:"The Most Merciful" },
+    { ar:"الْمَلِك", tr:"Al-Malik", en:"The Sovereign, The King" },
+    { ar:"الْقُدُّوس", tr:"Al-Quddus", en:"The Most Holy" },
+    { ar:"السَّلَام", tr:"As-Salam", en:"The Source of Peace" },
+    { ar:"الْمُؤْمِن", tr:"Al-Mu'min", en:"The Granter of Security" },
+    { ar:"الْمُهَيْمِن", tr:"Al-Muhaymin", en:"The Guardian" },
+    { ar:"الْعَزِيز", tr:"Al-Aziz", en:"The Almighty" },
+    { ar:"الْجَبَّار", tr:"Al-Jabbar", en:"The Compeller, The Restorer" },
+    { ar:"الْمُتَكَبِّر", tr:"Al-Mutakabbir", en:"The Supreme, The Majestic" },
+    { ar:"الْخَالِق", tr:"Al-Khaliq", en:"The Creator" },
+    { ar:"الْبَارِئ", tr:"Al-Bari'", en:"The Originator" },
+    { ar:"الْمُصَوِّر", tr:"Al-Musawwir", en:"The Fashioner of Forms" },
+    { ar:"الْغَفَّار", tr:"Al-Ghaffar", en:"The Ever-Forgiving" },
+    { ar:"الْقَهَّار", tr:"Al-Qahhar", en:"The All-Subduer" },
+    { ar:"الْوَهَّاب", tr:"Al-Wahhab", en:"The Bestower" },
+    { ar:"الرَّزَّاق", tr:"Ar-Razzaq", en:"The Provider" },
+    { ar:"الْفَتَّاح", tr:"Al-Fattah", en:"The Opener, The Judge" },
+    { ar:"الْعَلِيم", tr:"Al-Alim", en:"The All-Knowing" },
+    { ar:"الْقَابِض", tr:"Al-Qabid", en:"The Withholder" },
+    { ar:"الْبَاسِط", tr:"Al-Basit", en:"The Expander" },
+    { ar:"الْخَافِض", tr:"Al-Khafid", en:"The Abaser" },
+    { ar:"الرَّافِع", tr:"Ar-Rafi'", en:"The Exalter" },
+    { ar:"الْمُعِزّ", tr:"Al-Mu'izz", en:"The Honorer" },
+    { ar:"الْمُذِلّ", tr:"Al-Mudhill", en:"The Humbler" },
+    { ar:"السَّمِيع", tr:"As-Sami'", en:"The All-Hearing" },
+    { ar:"الْبَصِير", tr:"Al-Basir", en:"The All-Seeing" },
+    { ar:"الْحَكَم", tr:"Al-Hakam", en:"The Judge" },
+    { ar:"الْعَدْل", tr:"Al-Adl", en:"The Utterly Just" },
+    { ar:"اللَّطِيف", tr:"Al-Latif", en:"The Subtle, The Gentle" },
+    { ar:"الْخَبِير", tr:"Al-Khabir", en:"The All-Aware" },
+    { ar:"الْحَلِيم", tr:"Al-Halim", en:"The Forbearing" },
+    { ar:"الْعَظِيم", tr:"Al-Azim", en:"The Magnificent" },
+    { ar:"الْغَفُور", tr:"Al-Ghafur", en:"The Great Forgiver" },
+    { ar:"الشَّكُور", tr:"Ash-Shakur", en:"The Most Appreciative" },
+    { ar:"الْعَلِيّ", tr:"Al-Ali", en:"The Most High" },
+    { ar:"الْكَبِير", tr:"Al-Kabir", en:"The Most Great" },
+    { ar:"الْحَفِيظ", tr:"Al-Hafiz", en:"The Preserver" },
+    { ar:"الْمُقِيت", tr:"Al-Muqit", en:"The Nourisher" },
+    { ar:"الْحَسِيب", tr:"Al-Hasib", en:"The Reckoner" },
+    { ar:"الْجَلِيل", tr:"Al-Jalil", en:"The Majestic" },
+    { ar:"الْكَرِيم", tr:"Al-Karim", en:"The Most Generous" },
+    { ar:"الرَّقِيب", tr:"Ar-Raqib", en:"The Watchful" },
+    { ar:"الْمُجِيب", tr:"Al-Mujib", en:"The Responsive" },
+    { ar:"الْوَاسِع", tr:"Al-Wasi'", en:"The All-Encompassing" },
+    { ar:"الْحَكِيم", tr:"Al-Hakim", en:"The All-Wise" },
+    { ar:"الْوَدُود", tr:"Al-Wadud", en:"The Most Loving" },
+    { ar:"الْمَجِيد", tr:"Al-Majid", en:"The Most Glorious" },
+    { ar:"الْبَاعِث", tr:"Al-Ba'ith", en:"The Resurrector" },
+    { ar:"الشَّهِيد", tr:"Ash-Shahid", en:"The Witness" },
+    { ar:"الْحَقّ", tr:"Al-Haqq", en:"The Absolute Truth" },
+    { ar:"الْوَكِيل", tr:"Al-Wakil", en:"The Trustee" },
+    { ar:"الْقَوِيّ", tr:"Al-Qawiyy", en:"The All-Strong" },
+    { ar:"الْمَتِين", tr:"Al-Matin", en:"The Firm, The Steadfast" },
+    { ar:"الْوَلِيّ", tr:"Al-Waliyy", en:"The Protecting Friend" },
+    { ar:"الْحَمِيد", tr:"Al-Hamid", en:"The Praiseworthy" },
+    { ar:"الْمُحْصِي", tr:"Al-Muhsi", en:"The All-Enumerating" },
+    { ar:"الْمُبْدِئ", tr:"Al-Mubdi'", en:"The Originator, The Initiator" },
+    { ar:"الْمُعِيد", tr:"Al-Mu'id", en:"The Restorer" },
+    { ar:"الْمُحْيِي", tr:"Al-Muhyi", en:"The Giver of Life" },
+    { ar:"الْمُمِيت", tr:"Al-Mumit", en:"The Bringer of Death" },
+    { ar:"الْحَيّ", tr:"Al-Hayy", en:"The Ever-Living" },
+    { ar:"الْقَيُّوم", tr:"Al-Qayyum", en:"The Self-Subsisting" },
+    { ar:"الْوَاجِد", tr:"Al-Wajid", en:"The Finder, The Perceiver" },
+    { ar:"الْمَاجِد", tr:"Al-Majid", en:"The Noble, The Illustrious" },
+    { ar:"الْوَاحِد", tr:"Al-Wahid", en:"The One" },
+    { ar:"الْأَحَد", tr:"Al-Ahad", en:"The Unique, The Only One" },
+    { ar:"الصَّمَد", tr:"As-Samad", en:"The Eternal, The Absolute" },
+    { ar:"الْقَادِر", tr:"Al-Qadir", en:"The All-Powerful" },
+    { ar:"الْمُقْتَدِر", tr:"Al-Muqtadir", en:"The Omnipotent" },
+    { ar:"الْمُقَدِّم", tr:"Al-Muqaddim", en:"The Expediter" },
+    { ar:"الْمُؤَخِّر", tr:"Al-Mu'akhkhir", en:"The Delayer" },
+    { ar:"الْأَوَّل", tr:"Al-Awwal", en:"The First" },
+    { ar:"الْآخِر", tr:"Al-Akhir", en:"The Last" },
+    { ar:"الظَّاهِر", tr:"Az-Zahir", en:"The Manifest" },
+    { ar:"الْبَاطِن", tr:"Al-Batin", en:"The Hidden" },
+    { ar:"الْوَالِي", tr:"Al-Wali", en:"The Governor, The Patron" },
+    { ar:"الْمُتَعَالِي", tr:"Al-Muta'ali", en:"The Self-Exalted" },
+    { ar:"الْبَرّ", tr:"Al-Barr", en:"The Source of Goodness" },
+    { ar:"التَّوَّاب", tr:"At-Tawwab", en:"The Acceptor of Repentance" },
+    { ar:"الْمُنْتَقِم", tr:"Al-Muntaqim", en:"The Avenger" },
+    { ar:"الْعَفُوّ", tr:"Al-Afuww", en:"The Pardoner" },
+    { ar:"الرَّؤُوف", tr:"Ar-Ra'uf", en:"The Most Kind" },
+    { ar:"مَالِكُ الْمُلْك", tr:"Malik-ul-Mulk", en:"Master of the Kingdom" },
+    { ar:"ذُو الْجَلَالِ وَالْإِكْرَام", tr:"Dhul-Jalali wal-Ikram", en:"Lord of Majesty and Generosity" },
+    { ar:"الْمُقْسِط", tr:"Al-Muqsit", en:"The Equitable" },
+    { ar:"الْجَامِع", tr:"Al-Jami'", en:"The Gatherer" },
+    { ar:"الْغَنِيّ", tr:"Al-Ghani", en:"The Self-Sufficient" },
+    { ar:"الْمُغْنِي", tr:"Al-Mughni", en:"The Enricher" },
+    { ar:"الْمَانِع", tr:"Al-Mani'", en:"The Preventer" },
+    { ar:"الضَّارّ", tr:"Ad-Darr", en:"The Distresser" },
+    { ar:"النَّافِع", tr:"An-Nafi'", en:"The Benefactor" },
+    { ar:"النُّور", tr:"An-Nur", en:"The Light" },
+    { ar:"الْهَادِي", tr:"Al-Hadi", en:"The Guide" },
+    { ar:"الْبَدِيع", tr:"Al-Badi'", en:"The Incomparable Originator" },
+    { ar:"الْبَاقِي", tr:"Al-Baqi", en:"The Everlasting" },
+    { ar:"الْوَارِث", tr:"Al-Warith", en:"The Inheritor" },
+    { ar:"الرَّشِيد", tr:"Ar-Rashid", en:"The Guide to the Right Path" },
+    { ar:"الصَّبُور", tr:"As-Sabur", en:"The Patient" },
+  ];
 
   /* ---------------- Audio: looping background track, routed through Web Audio
      (iOS treats HTMLMediaElement.volume as read-only, so all fades and the
@@ -402,15 +658,17 @@
   /* ---------------- DOM ---------------- */
   const $ = (id) => document.getElementById(id);
   const app = $("app");
-  const screens = { home: $("home"), settings: $("settings"), session: $("session"), done: $("done") };
+  const screens = { menu: $("menu"), home: $("home"), settings: $("settings"), session: $("session"), done: $("done"), wazifa: $("wazifa") };
   const orb = $("orb");
   const STORE = "elemental-breath-settings";
 
   function applyTheme(el) { app.style.setProperty("--c1", el.c1); app.style.setProperty("--c2", el.c2); app.style.setProperty("--glow", el.glow); }
   function show(name) { Object.values(screens).forEach((s) => s.classList.remove("active")); screens[name].classList.add("active"); }
 
-  /* ---------------- Home ---------------- */
+  /* ---------------- Themes ---------------- */
+  const MENU_THEME = { c1:"#6e5733", c2:"#16120b", glow:"#cdaa62" };
   const HOME_THEME = { c1:"#414a5e", c2:"#15181f", glow:"#828ea8" };
+  function applyMenuTheme() { applyTheme(MENU_THEME); }
   function applyHomeTheme() { applyTheme(HOME_THEME); }
 
   /* ---------------- Settings ---------------- */
@@ -620,7 +878,106 @@
     else if (e.code==="ArrowRight") { skipElement(); }
   });
 
+  /* ---------------- Wazifa flashcards ---------------- */
+  const wzCard = $("wzCard"), wzSection = $("wazifa");
+  let wzDeck = [], wzIndex = 0, wzKnown = 0, wzReview = [], wzFlipped = false, wzAnimating = false;
+
+  function wzShuffle(a) {
+    a = a.slice();
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  }
+  function wzClearBadges() { $("wzBadgeKnown").style.opacity = 0; $("wzBadgeReview").style.opacity = 0; }
+  function wzRender() {
+    const w = wzDeck[wzIndex];
+    $("wzNum").textContent = `${wzIndex + 1} / ${wzDeck.length}`;
+    $("wzProgress").textContent = `${wzIndex + 1} / ${wzDeck.length}`;
+    $("wzAr").textContent = w.ar; $("wzTr").textContent = w.tr;
+    $("wzTrBack").textContent = w.tr; $("wzEn").textContent = w.en;
+    wzFlipped = false; wzCard.classList.remove("flipped");
+    wzClearBadges();
+  }
+  function startWazifa(deck) {
+    wzDeck = (deck && deck.length) ? deck : wzShuffle(WAZIFAS);
+    wzIndex = 0; wzKnown = 0; wzReview = []; wzAnimating = false;
+    wzSection.classList.remove("summary"); $("wzSummary").hidden = true;
+    wzCard.style.transition = "none"; wzCard.style.transform = ""; wzCard.style.opacity = "1";
+    wzRender();
+  }
+  function wzFlip() { if (wzAnimating) return; wzFlipped = !wzFlipped; wzCard.classList.toggle("flipped", wzFlipped); }
+  function wzSummaryShow() {
+    wzSection.classList.add("summary"); $("wzSummary").hidden = false;
+    $("wzSumStat").innerHTML = `You knew <b>${wzKnown}</b> of <b>${wzDeck.length}</b>`;
+    const missed = wzReview.length;
+    const rm = $("wzReviewMissed");
+    rm.textContent = `Review missed (${missed})`;
+    rm.style.display = missed ? "" : "none";
+  }
+  function wzDecide(correct) {
+    if (wzAnimating) return; wzAnimating = true;
+    const dir = correct ? 1 : -1;
+    if (correct) wzKnown++; else wzReview.push(wzDeck[wzIndex]);
+    wzCard.style.transition = "transform .4s ease, opacity .4s ease";
+    wzCard.style.transform = `translate(${dir * 150}%, -8%) rotate(${dir * 20}deg)`;
+    wzCard.style.opacity = "0";
+    setTimeout(() => {
+      wzIndex++;
+      if (wzIndex >= wzDeck.length) { wzAnimating = false; wzSummaryShow(); return; }
+      wzRender();
+      wzCard.style.transition = "none";
+      wzCard.style.transform = "translateY(12px) scale(.92)"; wzCard.style.opacity = "0";
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        wzCard.style.transition = "transform .33s ease, opacity .33s ease";
+        wzCard.style.transform = ""; wzCard.style.opacity = "1";
+        setTimeout(() => { wzAnimating = false; }, 330);
+      }));
+    }, 380);
+  }
+  // pointer drag (tinder swipe) — tap flips, swipe past threshold decides
+  let dragOn = false, dragMoved = false, dragX0 = 0, dragY0 = 0, dragW = 0;
+  wzCard.addEventListener("pointerdown", (e) => {
+    if (wzAnimating || wzSection.classList.contains("summary")) return;
+    dragOn = true; dragMoved = false; dragX0 = e.clientX; dragY0 = e.clientY; dragW = wzCard.offsetWidth;
+    try { wzCard.setPointerCapture(e.pointerId); } catch (err) {}
+    wzCard.style.transition = "none";
+  });
+  wzCard.addEventListener("pointermove", (e) => {
+    if (!dragOn) return;
+    const dx = e.clientX - dragX0, dy = e.clientY - dragY0;
+    if (Math.abs(dx) > 6 || Math.abs(dy) > 6) dragMoved = true;
+    wzCard.style.transform = `translate(${dx}px, ${dy * 0.14}px) rotate(${dx * 0.05}deg)`;
+    const t = Math.min(1, Math.abs(dx) / (dragW * 0.5));
+    $("wzBadgeKnown").style.opacity = dx > 0 ? t : 0;
+    $("wzBadgeReview").style.opacity = dx < 0 ? t : 0;
+  });
+  function wzEndDrag(e) {
+    if (!dragOn) return; dragOn = false;
+    const dx = e.clientX - dragX0;
+    if (!dragMoved) { wzCard.style.transition = "transform .2s ease"; wzCard.style.transform = ""; wzFlip(); return; }
+    const threshold = dragW * 0.32;
+    if (dx > threshold) wzDecide(true);
+    else if (dx < -threshold) wzDecide(false);
+    else { wzCard.style.transition = "transform .25s ease"; wzCard.style.transform = ""; wzClearBadges(); }
+  }
+  wzCard.addEventListener("pointerup", wzEndDrag);
+  wzCard.addEventListener("pointercancel", () => { if (dragOn) { dragOn = false; wzCard.style.transition = "transform .25s ease"; wzCard.style.transform = ""; wzClearBadges(); } });
+  $("wzKnownBtn").addEventListener("click", () => wzDecide(true));
+  $("wzReviewBtn").addEventListener("click", () => wzDecide(false));
+  $("wzReviewMissed").addEventListener("click", () => startWazifa(wzShuffle(wzReview)));
+  $("wzRestart").addEventListener("click", () => startWazifa());
+  document.addEventListener("keydown", (e) => {
+    if (!wzSection.classList.contains("active") || wzSection.classList.contains("summary")) return;
+    if (e.code === "ArrowRight") wzDecide(true);
+    else if (e.code === "ArrowLeft") wzDecide(false);
+    else if (e.code === "Space" || e.code === "Enter") { e.preventDefault(); wzFlip(); }
+  });
+
   /* ---------------- Navigation ---------------- */
+  function goMenu() { show("menu"); applyMenuTheme(); }
+  $("toBreathingBtn").addEventListener("click", () => { show("home"); applyHomeTheme(); });
+  $("toWazifaBtn").addEventListener("click", () => { show("wazifa"); applyMenuTheme(); startWazifa(); });
+  $("homeBackBtn").addEventListener("click", goMenu);
+  $("wzBackBtn").addEventListener("click", goMenu);
   $("gearBtn").addEventListener("click", () => show("settings"));
   $("backBtn").addEventListener("click", () => { show("home"); applyHomeTheme(); });
   $("doneSettingsBtn").addEventListener("click", () => { show("home"); applyHomeTheme(); });
@@ -630,7 +987,7 @@
 
   /* ---------------- Init ---------------- */
   loadSettings();
-  applyHomeTheme();
+  applyMenuTheme();
 
   /* ---------------- PWA service worker ---------------- */
   if ("serviceWorker" in navigator) {

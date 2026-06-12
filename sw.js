@@ -1,5 +1,5 @@
 /* Service worker — offline-first app shell for Elemental Breathing */
-const CACHE = "elemental-breath-v18";
+const CACHE = "elemental-breath-v19";
 const ASSETS = [
   "./",
   "./index.html",
