@@ -109,6 +109,7 @@
   .home-est { font-family: var(--ui-serif); font-style: italic; color: var(--muted); font-size: 15.5px; letter-spacing: .02em; font-variant-numeric: tabular-nums; margin-top: -2px; }
   .home-footer { position: absolute; bottom: calc(20px + var(--safe-b)); left: 0; right: 0; text-align: center; font-family: var(--ui-serif); font-style: italic; font-size: 16px; letter-spacing: .1em; color: rgba(218, 184, 120, .72); }
   .home-est b { color: var(--fg); font-weight: 600; }
+  .home-credit { font-family: var(--ui-serif); font-style: italic; color: var(--muted); font-size: 13px; letter-spacing: .04em; text-align: center; opacity: .72; margin-top: 2px; }
 
   .sound-row {
     display: flex; align-items: center; gap: 11px; padding: 9px 10px 9px 18px;
@@ -172,7 +173,7 @@
   .sess-bottom { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 22px; }
   .phase { text-align: center; min-height: 100px; }
   .phase .word { font-family: var(--ui-serif); font-size: clamp(38px, 9vw, 64px); font-weight: 500; letter-spacing: .02em; line-height: 1.06; }
-  .phase .sub { font-family: var(--ui-serif); font-style: italic; color: var(--muted); font-size: clamp(15px, 4.4vw, 20px); letter-spacing: .02em; margin-top: 8px; }
+  .phase .sub { font-family: var(--ui-serif); font-style: italic; color: var(--muted); font-size: clamp(38px, 9vw, 64px); letter-spacing: .02em; margin-top: 8px; line-height: 1.06; }
   .phase .dhikr { margin-top: 12px; min-height: 44px; font-family: var(--ui-serif); font-style: italic; font-size: clamp(18px, 5vw, 24px); letter-spacing: .03em; line-height: 1.12; color: color-mix(in srgb, var(--glow) 72%, #fff 28%); opacity: 0; transition: opacity .55s ease; }
   .phase .dhikr.show { opacity: 1; }
   .phase .dhikr small { display: block; font-style: normal; font-family: var(--ui-body); font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
@@ -320,6 +321,7 @@
           <span class="track"></span><span class="knob"></span>
         </label>
       </div>
+      <div class="home-credit">Music by Anna Samia Shatkovskaja</div>
     </div>
     <div class="home-footer">Towards the One</div>
   </section>
