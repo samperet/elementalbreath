@@ -220,7 +220,11 @@
   .wz-stage { flex: 1; min-height: 0; width: 100%; display: grid; place-items: center; position: relative; padding: 8px 0; }
   .wz-card-behind { position: absolute; width: min(348px, 84vw); aspect-ratio: 5 / 6.6; max-height: 88%;
     border-radius: 22px; background: linear-gradient(158deg, #e7d9bd, #d2bf98);
-    transform: translateY(16px) scale(.93); opacity: .55; box-shadow: 0 16px 38px rgba(0,0,0,.42); }
+    transform: translateY(16px) scale(.93); opacity: .55; box-shadow: 0 16px 38px rgba(0,0,0,.42);
+    transition: transform .4s ease, opacity .4s ease; }
+  /* As the top card flies off, the next card (shown here) rises into its place. */
+  .wz-card-behind.rising { transform: translateY(0) scale(1.034); opacity: 1; }
+  .wz-card-behind[hidden] { display: none; }
   .wz-card { position: relative; width: min(360px, 86vw); aspect-ratio: 5 / 6.6; max-height: 94%;
     perspective: 1500px; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; will-change: transform; }
   .wz-card:active { cursor: grabbing; }
@@ -422,7 +426,14 @@
       <div class="wz-progress" id="wzProgress">1 / 99</div>
     </div>
     <div class="wz-stage">
-      <div class="wz-card-behind"></div>
+      <div class="wz-card-behind" id="wzCardBehind">
+        <div class="wz-face wz-front">
+          <div class="wz-num" id="wzNumB"></div>
+          <div class="wz-ar" id="wzArB"></div>
+          <svg class="wz-divider" viewBox="0 0 66 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 8h23M41 8h23"/><path d="M33 2.5l4.5 5.5-4.5 5.5-4.5-5.5z" fill="currentColor" stroke="none"/></svg>
+          <div class="wz-tr" id="wzTrB"></div>
+        </div>
+      </div>
       <div class="wz-card" id="wzCard">
         <div class="wz-badge known" id="wzBadgeKnown">Known</div>
         <div class="wz-badge review" id="wzBadgeReview">Review</div>
@@ -882,6 +893,7 @@
 
   /* ---------------- Wazifa flashcards ---------------- */
   const wzCard = $("wzCard"), wzSection = $("wazifa"), wzFlipEl = wzCard.querySelector(".wz-flip");
+  const wzCardBehind = $("wzCardBehind");
   let wzDeck = [], wzIndex = 0, wzKnown = 0, wzReview = [], wzFlipped = false, wzAnimating = false;
 
   function wzShuffle(a) {
@@ -906,12 +918,24 @@
     wzFlipEl.style.transition = "";
     wzClearBadges();
   }
+  // The behind card is a live preview of the next card, so it is already
+  // visible when the top card slides away (no blank gap before it loads).
+  function wzRenderBehind() {
+    const nxt = wzDeck[wzIndex + 1];
+    if (!nxt) { wzCardBehind.hidden = true; return; }
+    wzCardBehind.hidden = false;
+    $("wzNumB").textContent = `${wzIndex + 2} / ${wzDeck.length}`;
+    $("wzArB").textContent = nxt.ar;
+    $("wzTrB").textContent = nxt.tr;
+  }
   function startWazifa(deck) {
     wzDeck = (deck && deck.length) ? deck : wzShuffle(WAZIFAS);
     wzIndex = 0; wzKnown = 0; wzReview = []; wzAnimating = false;
     wzSection.classList.remove("summary"); $("wzSummary").hidden = true;
     wzCard.style.transition = "none"; wzCard.style.transform = ""; wzCard.style.opacity = "1";
+    wzCardBehind.classList.remove("rising"); wzCardBehind.style.transition = "";
     wzRender();
+    wzRenderBehind();
   }
   function wzFlip() { if (wzAnimating) return; wzFlipped = !wzFlipped; wzCard.classList.toggle("flipped", wzFlipped); }
   function wzSummaryShow() {
@@ -929,17 +953,28 @@
     wzCard.style.transition = "transform .4s ease, opacity .4s ease";
     wzCard.style.transform = `translate(${dir * 150}%, -8%) rotate(${dir * 20}deg)`;
     wzCard.style.opacity = "0";
+    // The next card (already previewed behind) rises into the top position as
+    // the current card flies away, so it is revealed rather than reloaded.
+    wzCardBehind.classList.add("rising");
     setTimeout(() => {
       wzIndex++;
-      if (wzIndex >= wzDeck.length) { wzAnimating = false; wzSummaryShow(); return; }
+      if (wzIndex >= wzDeck.length) {
+        wzAnimating = false; wzCardBehind.classList.remove("rising"); wzSummaryShow(); return;
+      }
+      // Promote: snap the top card (now the next card) into place over the
+      // risen preview — same content, same spot, so the swap is seamless.
       wzRender();
       wzCard.style.transition = "none";
-      wzCard.style.transform = "translateY(12px) scale(.92)"; wzCard.style.opacity = "0";
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        wzCard.style.transition = "transform .33s ease, opacity .33s ease";
-        wzCard.style.transform = ""; wzCard.style.opacity = "1";
-        setTimeout(() => { wzAnimating = false; }, 330);
-      }));
+      wzCard.style.transform = ""; wzCard.style.opacity = "1";
+      // Reset the preview instantly to the card after next, hidden beneath the
+      // top card, then restore its transition for the next swipe.
+      wzCardBehind.style.transition = "none";
+      wzCardBehind.classList.remove("rising");
+      wzRenderBehind();
+      requestAnimationFrame(() => {
+        wzCardBehind.style.transition = "";
+        wzAnimating = false;
+      });
     }, 380);
   }
   // pointer drag (tinder swipe) — tap flips, swipe past threshold decides
