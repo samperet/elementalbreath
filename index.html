@@ -881,7 +881,7 @@
   });
 
   /* ---------------- Wazifa flashcards ---------------- */
-  const wzCard = $("wzCard"), wzSection = $("wazifa");
+  const wzCard = $("wzCard"), wzSection = $("wazifa"), wzFlipEl = wzCard.querySelector(".wz-flip");
   let wzDeck = [], wzIndex = 0, wzKnown = 0, wzReview = [], wzFlipped = false, wzAnimating = false;
 
   function wzShuffle(a) {
@@ -896,7 +896,14 @@
     $("wzProgress").textContent = `${wzIndex + 1} / ${wzDeck.length}`;
     $("wzAr").textContent = w.ar; $("wzTr").textContent = w.tr;
     $("wzTrBack").textContent = w.tr; $("wzEn").textContent = w.en;
-    wzFlipped = false; wzCard.classList.remove("flipped");
+    // Reset to the front instantly (no flip animation) so the next card's
+    // front is fully rendered before it appears — otherwise the previous
+    // card's back stays visible while the .55s flip rotates back.
+    wzFlipped = false;
+    wzFlipEl.style.transition = "none";
+    wzCard.classList.remove("flipped");
+    void wzFlipEl.offsetWidth; // force reflow to commit the instant reset
+    wzFlipEl.style.transition = "";
     wzClearBadges();
   }
   function startWazifa(deck) {
