@@ -46,10 +46,11 @@
     transition: --c1 1.4s ease, --c2 1.4s ease, --glow 1.4s ease;
     background: radial-gradient(135% 105% at 50% 18%, color-mix(in srgb, var(--c1) 30%, #07080d) 0%, #06070b 58%);
   }
-  #app::before {
+  #bgPulse {
     content: ""; position: absolute; inset: 0; pointer-events: none;
     background: url("manuscript.jpg") center / cover no-repeat;
-    opacity: .07;
+    opacity: .07; transform: scale(1); transform-origin: center;
+    will-change: transform, opacity;
   }
   #app::after {
     content: ""; position: absolute; inset: 0; pointer-events: none;
@@ -323,6 +324,7 @@
 </head>
 <body>
 <div id="app">
+  <div id="bgPulse" aria-hidden="true"></div>
   <!-- ===================== TOP MENU ===================== -->
   <section id="menu" class="screen active">
     <div class="menu-inner">
@@ -931,7 +933,27 @@
 
   /* ---------------- Session controller ---------------- */
   const MIN=0.5, MAX=1.0, EASE="cubic-bezier(0.37, 0, 0.63, 1)";
+  // background manuscript breathes with the orb — a very subtle swell
+  const BG_REST=1.0, BG_FULL=1.045, BG_OP_REST=0.07, BG_OP_FULL=0.11;
+  const bgPulse = $("bgPulse");
+  let bgAnim=null, bgState={ scale:BG_REST, op:BG_OP_REST };
   let currentAnim=null, paused=false, interrupt=null, running=false;
+
+  function pulseBg(toScale, toOp, ms, easing) {
+    if (!bgPulse) return;
+    if (bgAnim) { try { bgAnim.cancel(); } catch (e) {} }
+    bgAnim = bgPulse.animate(
+      [{ transform:`scale(${bgState.scale})`, opacity:bgState.op },
+       { transform:`scale(${toScale})`,       opacity:toOp }],
+      { duration: Math.max(1,ms), easing: easing||"linear", fill:"forwards" });
+    if (paused) bgAnim.pause();
+    bgState = { scale:toScale, op:toOp };
+  }
+  function resetBg() {
+    if (bgAnim) { try { bgAnim.cancel(); } catch (e) {} bgAnim=null; }
+    bgState = { scale:BG_REST, op:BG_OP_REST };
+    if (bgPulse) { bgPulse.style.transform = `scale(${BG_REST})`; bgPulse.style.opacity = BG_OP_REST; }
+  }
 
   function runAnim(target, keyframes, duration, easing) {
     const a = target.animate(keyframes, { duration: Math.max(1,duration), easing: easing||"linear", fill:"forwards" });
@@ -969,15 +991,17 @@
     interrupt = null;
     applyTheme(el); markDots(index); setBreathGuides(el);
     $("elemName").textContent = el.name;
-    $("orbIcon").innerHTML = ICONS[el.id]; orb.style.transform = `scale(${MIN})`;
+    $("orbIcon").innerHTML = ICONS[el.id]; orb.style.transform = `scale(${MIN})`; resetBg();
     const inSub  = methodText(el.inhale);
     const outSub = methodText(el.exhale);
     for (let b=0; b<cfg.breaths; b++) {
       $("breathCount").textContent = `Breath ${b+1} of ${cfg.breaths}`;
       setPhase("Breathe In", inSub, el.refined); setDhikr(DHIKR_IN);
+      pulseBg(BG_FULL, BG_OP_FULL, cfg.inhaleMs, EASE);
       if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MAX})`}], cfg.inhaleMs, EASE))) return interrupt || "stop";
       if (cfg.holdInMs > 0) { setPhase("Hold","full and still"); setDhikr(null); if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MAX})`}], cfg.holdInMs))) return interrupt || "stop"; }
       setPhase("Breathe Out", outSub, el.refined); setDhikr(DHIKR_OUT);
+      pulseBg(BG_REST, BG_OP_REST, cfg.exhaleMs, EASE);
       if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MIN})`}], cfg.exhaleMs, EASE))) return interrupt || "stop";
       if (cfg.holdOutMs > 0) { setPhase("Hold","empty and open"); setDhikr(null); if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MIN})`}], cfg.holdOutMs))) return interrupt || "stop"; }
     }
@@ -998,6 +1022,7 @@
     [...$("dots").children].forEach((d)=>d.className="dot done");
     // Let the music keep playing on the done screen — it only resolves once
     // the practitioner makes a selection (begin again / wazifa / home).
+    resetBg();
     running=false; releaseWakeLock(); show("done");
   }
 
@@ -1009,14 +1034,15 @@
   }
   function togglePause() {
     if (!running) return; paused = !paused;
-    if (paused) { currentAnim && currentAnim.pause(); audio.suspend(); }
-    else { currentAnim && currentAnim.play(); audio.resume(); }
+    if (paused) { currentAnim && currentAnim.pause(); bgAnim && bgAnim.pause(); audio.suspend(); }
+    else { currentAnim && currentAnim.play(); bgAnim && bgAnim.play(); audio.resume(); }
     updatePauseIcon();
   }
   function stopSession() {
     if (!running) return; interrupt="stop"; running=false;
     if (paused) { paused=false; updatePauseIcon(); }
     currentAnim && currentAnim.cancel(); audio.stop();
+    resetBg();
     releaseWakeLock();
     show("home"); applyHomeTheme();
   }
