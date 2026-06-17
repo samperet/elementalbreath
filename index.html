@@ -169,30 +169,24 @@
   /* fixed-size symbol overlay — stays constant while the orb breathes */
   #orbIcon { position: absolute; z-index: 3; width: min(100px, 24vmin, 16vh); height: min(100px, 24vmin, 16vh); color: rgba(255,255,255,.96); filter: drop-shadow(0 2px 10px rgba(0,0,0,.35)); pointer-events: none; }
   #orbIcon svg { width: 100%; height: 100%; }
-  /* nose (left, inhale) & mouth (right, exhale) breathing guides. The part in
-     use gently slides + fades in; the idle part slides + fades away. Animation
-     intentionally overrides prefers-reduced-motion — it is the cue itself. */
-  .breath-guide { position: absolute; top: 50%; z-index: 2;
-    width: min(58px, 13vmin, 9vh); color: var(--glow); opacity: 0; pointer-events: none;
-    transition: opacity .8s ease, transform .8s cubic-bezier(.25,.1,.25,1); }
-  .breath-guide svg { width: 100%; height: auto; display: block; }
-  .breath-guide.nose { left: clamp(8px, 5vw, 48px); transform: translate(-18px, -50%); }
-  .breath-guide.mouth { right: clamp(8px, 5vw, 48px); transform: translate(18px, -50%); }
-  .breath-guide .flow { opacity: 0; }
-  .orb-stage.in .breath-guide.nose,
-  .orb-stage.out .breath-guide.mouth { opacity: .6; transform: translate(0, -50%); }
-  .orb-stage.in .breath-guide.nose .flow { animation: breatheInFlow 2.4s ease-in-out infinite; }
-  .orb-stage.out .breath-guide.mouth .flow { animation: breatheOutFlow 2.4s ease-in-out infinite; }
-  @keyframes breatheInFlow {
-    0% { opacity: 0; transform: translateX(9px); }
-    45% { opacity: 1; }
-    100% { opacity: 0; transform: translateX(-3px); }
-  }
-  @keyframes breatheOutFlow {
-    0% { opacity: 0; transform: translateX(-3px); }
-    45% { opacity: 1; }
-    100% { opacity: 0; transform: translateX(11px); }
-  }
+  /* nose (left) & mouth (right) breathing guides. Which parts are present and
+     which arrow each carries (in / out / both) is fixed for the whole element;
+     only an element change fades a part in or out. Arrows sit on the inner
+     side of each part and only fade — they never move. */
+  .breath-guide { position: absolute; top: 50%; z-index: 2; display: flex; align-items: center; gap: clamp(3px, 1.2vw, 8px);
+    color: var(--glow); opacity: 0; pointer-events: none;
+    transition: opacity 2.6s ease, transform 2.6s cubic-bezier(.22,.61,.36,1); }
+  .breath-guide .bp { width: min(54px, 12vmin, 8.5vh); height: auto; display: block; }
+  .breath-guide .arrows { position: relative; width: min(22px, 5.2vmin); aspect-ratio: 11 / 13; }
+  .breath-guide .arrow { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); width: 100%; height: auto; opacity: 0; transition: opacity 2.6s ease; }
+  /* nose sits on the left and slides in from the left; arrows on its right (inner) */
+  .breath-guide.nose { left: clamp(8px, 5vw, 44px); transform: translate(-18px, -50%); }
+  /* mouth sits on the right and slides in from the right; arrows on its left (inner) */
+  .breath-guide.mouth { right: clamp(8px, 5vw, 44px); transform: translate(18px, -50%); }
+  .breath-guide.show { opacity: .6; transform: translate(0, -50%); }
+  .breath-guide.role-in:not(.role-out) .arrow-in { opacity: .85; }
+  .breath-guide.role-out:not(.role-in) .arrow-out { opacity: .85; }
+  .breath-guide.role-in.role-out .arrow-both { opacity: .85; }
 
   .sess-bottom { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 22px; }
   .phase { text-align: center; min-height: 100px; }
@@ -213,7 +207,22 @@
   #done h2 { font-family: var(--ui-serif); font-size: clamp(32px, 6vw, 46px); font-weight: 500; margin-bottom: 14px; text-align: center; }
   #done p { color: var(--muted); font-size: 15px; line-height: 1.6; text-align: center; max-width: 44ch; margin-bottom: 30px; }
   #done .done-suggest { font-family: var(--ui-serif); font-style: italic; font-size: 16px; color: var(--glow); max-width: 40ch; margin: -16px 0 28px; }
-  #done .done-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  #done .done-btns { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
+  #done .done-row { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  /* Wazifa tile — an illuminated Qur'an manuscript page as the backdrop */
+  .wz-tile { position: relative; overflow: hidden; cursor: pointer; display: block;
+    width: min(320px, 82vw); aspect-ratio: 3 / 2; padding: 18px; text-align: center;
+    border-radius: 18px; border: 1px solid color-mix(in srgb, var(--glow) 50%, transparent);
+    background: #1a140a url("manuscript.jpg") center 32% / cover no-repeat;
+    box-shadow: 0 12px 34px rgba(0,0,0,.5);
+    transition: transform .18s, border-color .2s, box-shadow .2s; }
+  .wz-tile::before { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(8,6,3,.12) 0%, rgba(8,6,3,.5) 52%, rgba(8,6,3,.88) 100%); }
+  .wz-tile:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--glow) 80%, transparent); box-shadow: 0 18px 44px rgba(0,0,0,.55); }
+  .wz-tile:active { transform: translateY(0); }
+  .wz-tile-label, .wz-tile-sub { position: absolute; left: 0; right: 0; }
+  .wz-tile-label { bottom: 34px; font-family: var(--ui-serif); font-size: clamp(21px, 5.6vw, 26px); font-weight: 500; color: #f6eed8; letter-spacing: .02em; text-shadow: 0 2px 12px rgba(0,0,0,.8); }
+  .wz-tile-sub { bottom: 16px; font-family: var(--ui-serif); font-style: italic; font-size: 13.5px; color: color-mix(in srgb, var(--glow) 78%, #f6eed8); text-shadow: 0 1px 8px rgba(0,0,0,.85); }
 
   /* ======================= TOP MENU ======================= */
   #menu { justify-content: center; gap: clamp(22px, 4vh, 42px); }
@@ -412,25 +421,27 @@
       <div class="elem-name" id="elemName">Earth</div>
     </div>
     <div class="orb-stage" id="orbStage">
-      <div class="breath-guide nose" id="breathNose" aria-hidden="true" title="in through the nose">
-        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <div class="breath-guide nose" id="breathNose" aria-hidden="true">
+        <svg class="bp" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M30 10 C 27 19, 25 26, 31 31 C 37 35, 40 38, 36 41 C 33 43, 31 42, 30 40 C 29 43, 30 46, 33 48"/>
           <path d="M30 40 q 3 1.5 6 0.5"/>
-          <g class="flow">
-            <path d="M58 39 L 45 39"/>
-            <path d="M49 35 L 45 39 L 49 43"/>
-          </g>
         </svg>
+        <div class="arrows">
+          <svg class="arrow arrow-in" viewBox="0 0 28 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M26 8 L 6 8"/><path d="M11 3 L 6 8 L 11 13"/></svg>
+          <svg class="arrow arrow-out" viewBox="0 0 28 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8 L 22 8"/><path d="M17 3 L 22 8 L 17 13"/></svg>
+          <svg class="arrow arrow-both" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9 L 6 9"/><path d="M11 5 L 6 9 L 11 13"/><path d="M6 19 L 22 19"/><path d="M17 15 L 22 19 L 17 23"/></svg>
+        </div>
       </div>
-      <div class="breath-guide mouth" id="breathMouth" aria-hidden="true" title="out through the mouth">
-        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <div class="breath-guide mouth" id="breathMouth" aria-hidden="true">
+        <div class="arrows">
+          <svg class="arrow arrow-in" viewBox="0 0 28 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8 L 22 8"/><path d="M17 3 L 22 8 L 17 13"/></svg>
+          <svg class="arrow arrow-out" viewBox="0 0 28 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M26 8 L 6 8"/><path d="M11 3 L 6 8 L 11 13"/></svg>
+          <svg class="arrow arrow-both" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9 L 6 9"/><path d="M11 5 L 6 9 L 11 13"/><path d="M6 19 L 22 19"/><path d="M17 15 L 22 19 L 17 23"/></svg>
+        </div>
+        <svg class="bp" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 31 Q 20 23 28 30 Q 30 31 32 30 Q 40 23 50 31"/>
           <path d="M10 31 Q 30 44 50 31"/>
           <path d="M14 31 L 46 31"/>
-          <g class="flow">
-            <path d="M48 31 L 60 31"/>
-            <path d="M56 27 L 60 31 L 56 35"/>
-          </g>
         </svg>
       </div>
       <div id="orb" class="orb"></div>
@@ -458,9 +469,14 @@
     <p>You have breathed through the elements. Rest a moment in the stillness that remains, and carry it gently with you.</p>
     <p class="done-suggest">When you are ready, continue your remembrance with the Wazifa — the 99 beautiful names.</p>
     <div class="done-btns">
-      <button class="btn-ghost accent" id="toWazifaFromDoneBtn">Practice the Wazifa</button>
-      <button class="btn-ghost" id="againBtn">Begin again</button>
-      <button class="btn-ghost" id="homeBtn">Home</button>
+      <button class="wz-tile" id="toWazifaFromDoneBtn">
+        <span class="wz-tile-label">Practice the Wazifa</span>
+        <span class="wz-tile-sub">the 99 beautiful names</span>
+      </button>
+      <div class="done-row">
+        <button class="btn-ghost" id="againBtn">Begin again</button>
+        <button class="btn-ghost" id="homeBtn">Home</button>
+      </div>
     </div>
   </section>
 
@@ -859,11 +875,18 @@
     currentAnim = a; if (paused) a.pause();
     return a.finished.then(()=>{ if(currentAnim===a) currentAnim=null; return true; }, ()=>{ if(currentAnim===a) currentAnim=null; return false; });
   }
-  function setPhase(word, sub) {
-    $("phaseWord").textContent = word; $("phaseSub").textContent = sub||"";
-    // light the nose on the inhale, the mouth on the exhale, dim both on holds
-    $("orbStage").classList.toggle("in", word === "Breathe In");
-    $("orbStage").classList.toggle("out", word === "Breathe Out");
+  function setPhase(word, sub) { $("phaseWord").textContent = word; $("phaseSub").textContent = sub||""; }
+  // Set which breath guides are present for this element (fixed for its whole
+  // duration). A part is shown if it is used to inhale and/or exhale, and
+  // carries an in / out / both arrow accordingly. Only element changes animate.
+  function cfgGuide(node, isIn, isOut) {
+    node.classList.toggle("show", isIn || isOut);
+    node.classList.toggle("role-in", isIn);
+    node.classList.toggle("role-out", isOut);
+  }
+  function setBreathGuides(el) {
+    cfgGuide($("breathNose"),  el.inhale === "nose",  el.exhale === "nose");
+    cfgGuide($("breathMouth"), el.inhale === "mouth", el.exhale === "mouth");
   }
   const DHIKR_IN  = { phrase: "Ya Shafee", trans: "the Healer" };
   const DHIKR_OUT = { phrase: "Ya Kafiyy", trans: "the Remedy" };
@@ -877,7 +900,7 @@
 
   async function runElement(el, index, cfg) {
     interrupt = null;
-    applyTheme(el); markDots(index);
+    applyTheme(el); markDots(index); setBreathGuides(el);
     $("elemName").textContent = el.name;
     $("orbIcon").innerHTML = ICONS[el.id]; orb.style.transform = `scale(${MIN})`;
     const inSub  = methodText(el.inhale) + (el.refined ? ", very refined" : "");
