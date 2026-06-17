@@ -179,10 +179,10 @@
   .breath-guide .bp { width: min(54px, 12vmin, 8.5vh); height: auto; display: block; }
   .breath-guide .arrows { position: relative; width: min(22px, 5.2vmin); aspect-ratio: 11 / 13; }
   .breath-guide .arrow { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); width: 100%; height: auto; opacity: 0; transition: opacity 2.6s ease; }
-  /* nose sits on the left and slides in from the left; arrows on its right (inner) */
-  .breath-guide.nose { left: clamp(8px, 5vw, 44px); transform: translate(-18px, -50%); }
-  /* mouth sits on the right and slides in from the right; arrows on its left (inner) */
-  .breath-guide.mouth { right: clamp(8px, 5vw, 44px); transform: translate(18px, -50%); }
+  /* nose hugs the left edge and slides in from the left; arrows on its right (inner) */
+  .breath-guide.nose { left: clamp(0px, 1.5vw, 6px); transform: translate(-18px, -50%); }
+  /* mouth hugs the right edge and slides in from the right; arrows on its left (inner) */
+  .breath-guide.mouth { right: clamp(0px, 1.5vw, 6px); transform: translate(18px, -50%); }
   .breath-guide.show { opacity: .6; transform: translate(0, -50%); }
   .breath-guide.role-in:not(.role-out) .arrow-in { opacity: .85; }
   .breath-guide.role-out:not(.role-in) .arrow-out { opacity: .85; }
