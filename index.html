@@ -210,7 +210,8 @@
   #done .done-btns { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
   #done .done-row { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
   /* Wazifa tile — an illuminated Qur'an manuscript page as the backdrop */
-  .wz-tile { position: relative; overflow: hidden; cursor: pointer; display: block;
+  .wz-tile { position: relative; overflow: hidden; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
     width: min(320px, 82vw); aspect-ratio: 3 / 2; padding: 18px; text-align: center;
     border-radius: 18px; border: 1px solid color-mix(in srgb, var(--glow) 50%, transparent);
     background: #1a140a url("manuscript.jpg") center 32% / cover no-repeat;
@@ -220,9 +221,9 @@
     background: linear-gradient(180deg, rgba(8,6,3,.12) 0%, rgba(8,6,3,.5) 52%, rgba(8,6,3,.88) 100%); }
   .wz-tile:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--glow) 80%, transparent); box-shadow: 0 18px 44px rgba(0,0,0,.55); }
   .wz-tile:active { transform: translateY(0); }
-  .wz-tile-label, .wz-tile-sub { position: absolute; left: 0; right: 0; }
-  .wz-tile-label { bottom: 34px; font-family: var(--ui-serif); font-size: clamp(21px, 5.6vw, 26px); font-weight: 500; color: #f6eed8; letter-spacing: .02em; text-shadow: 0 2px 12px rgba(0,0,0,.8); }
-  .wz-tile-sub { bottom: 16px; font-family: var(--ui-serif); font-style: italic; font-size: 13.5px; color: color-mix(in srgb, var(--glow) 78%, #f6eed8); text-shadow: 0 1px 8px rgba(0,0,0,.85); }
+  .wz-tile-label, .wz-tile-sub { position: relative; }
+  .wz-tile-label { font-family: var(--ui-serif); font-size: clamp(21px, 5.6vw, 26px); font-weight: 500; color: #f6eed8; letter-spacing: .02em; text-shadow: 0 2px 12px rgba(0,0,0,.8); }
+  .wz-tile-sub { font-family: var(--ui-serif); font-style: italic; font-size: 13.5px; color: color-mix(in srgb, var(--glow) 78%, #f6eed8); text-shadow: 0 1px 8px rgba(0,0,0,.85); }
 
   /* ======================= TOP MENU ======================= */
   #menu { justify-content: center; gap: clamp(22px, 4vh, 42px); }
@@ -470,7 +471,7 @@
     <p class="done-suggest">When you are ready, continue your remembrance with the Wazifa — the 99 beautiful names.</p>
     <div class="done-btns">
       <button class="wz-tile" id="toWazifaFromDoneBtn">
-        <span class="wz-tile-label">Practice the Wazifa</span>
+        <span class="wz-tile-label">Practice the Wazifas</span>
         <span class="wz-tile-sub">the 99 beautiful names</span>
       </button>
       <div class="done-row">
