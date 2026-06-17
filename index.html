@@ -207,7 +207,7 @@
   .phase .sub { font-family: var(--ui-serif); font-style: italic; color: var(--muted); font-size: clamp(38px, 9vw, 64px); letter-spacing: .02em; margin-top: 8px; line-height: 1.06; }
   .phase .refined { min-height: 22px; margin-top: 6px; font-family: var(--ui-serif); font-style: italic; font-size: clamp(14px, 4vw, 18px); letter-spacing: .04em; color: var(--muted); opacity: 0; transition: opacity .4s ease; }
   .phase .refined.show { opacity: 1; }
-  .phase .dhikr { margin-top: 12px; min-height: 44px; font-family: var(--ui-serif); font-style: italic; font-size: clamp(18px, 5vw, 24px); letter-spacing: .03em; line-height: 1.12; color: color-mix(in srgb, var(--glow) 72%, #fff 28%); opacity: 0; transition: opacity .55s ease; }
+  .phase .dhikr { margin-top: 12px; min-height: 50px; font-family: var(--ui-serif); font-style: italic; font-size: clamp(22px, 6.2vw, 31px); letter-spacing: .03em; line-height: 1.12; color: color-mix(in srgb, var(--glow) 72%, #fff 28%); opacity: 0; transition: opacity .55s ease; }
   .phase .dhikr.show { opacity: 1; }
   .phase .dhikr small { display: block; font-style: normal; font-family: var(--ui-body); font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
   .breath-count { font-size: 12.5px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -983,7 +983,7 @@
     cfgGuide($("breathMouth"), el.inhale === "mouth", el.exhale === "mouth");
   }
   const DHIKR_IN  = { phrase: "Ya Shafee", trans: "the Healer" };
-  const DHIKR_OUT = { phrase: "Ya Kafiyy", trans: "the Remedy" };
+  const DHIKR_OUT = { phrase: "Ya Kafee", trans: "the Remedy" };
   function setDhikr(d) {
     const el = $("phaseDhikr");
     if (d) { el.innerHTML = `${d.phrase}<small>${d.trans}</small>`; el.classList.add("show"); }
