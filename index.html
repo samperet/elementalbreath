@@ -135,10 +135,19 @@
 
   .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
   @media (max-width: 540px){ .controls-grid { grid-template-columns: 1fr; gap: 14px; } }
-  .field .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .field .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 10px; }
   .field label { font-size: 13.5px; letter-spacing: .02em; color: #d6dbe4; font-weight: 500; }
   .field .val { font-variant-numeric: tabular-nums; font-size: 13.5px; color: var(--fg); font-weight: 600; }
   .field .val small { color: var(--muted); font-weight: 400; font-size: 11.5px; }
+  /* numeric stepper for precise per-track timing */
+  .field .stepper { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+  .field .stepper small { color: var(--muted); font-size: 11.5px; }
+  .step-btn { width: 23px; height: 23px; flex: 0 0 auto; border-radius: 6px; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06); color: var(--fg); font-size: 15px; line-height: 1; cursor: pointer; display: grid; place-items: center; padding: 0; transition: background .15s, border-color .15s, transform .1s; -webkit-tap-highlight-color: transparent; }
+  .step-btn:hover { background: rgba(255,255,255,.13); border-color: rgba(255,255,255,.3); }
+  .step-btn:active { transform: scale(.9); }
+  .step-input { width: 46px; text-align: center; font-variant-numeric: tabular-nums; font-size: 13.5px; font-weight: 600; color: var(--fg); background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.14); border-radius: 7px; padding: 3px 2px; font-family: var(--ui-body); -moz-appearance: textfield; appearance: textfield; }
+  .step-input::-webkit-outer-spin-button, .step-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .step-input:focus { outline: none; border-color: color-mix(in srgb, var(--glow) 60%, transparent); background: rgba(255,255,255,.08); }
 
   input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 4px; background: rgba(255,255,255,.13); outline: none; cursor: pointer; }
   input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #fff; border: none; box-shadow: 0 1px 6px rgba(0,0,0,.5); transition: transform .15s; }
@@ -387,20 +396,48 @@
           <input type="range" id="pace" min="4" max="20" step="1" value="8" />
         </div>
         <div class="field">
-          <div class="row"><label for="inhale">Inhale</label><span class="val" id="inhaleVal">4.0<small>s</small></span></div>
-          <input type="range" id="inhale" min="2" max="12" step="0.5" value="4" />
+          <div class="row"><label for="inhaleNum">Inhale</label>
+            <span class="stepper">
+              <button type="button" class="step-btn" data-id="inhale" data-step="-1" aria-label="Decrease inhale">&minus;</button>
+              <input type="number" class="step-input" id="inhaleNum" min="2" max="12" step="0.1" value="4.0" inputmode="decimal" aria-label="Inhale seconds" />
+              <small>s</small>
+              <button type="button" class="step-btn" data-id="inhale" data-step="1" aria-label="Increase inhale">+</button>
+            </span>
+          </div>
+          <input type="range" id="inhale" min="2" max="12" step="0.1" value="4" />
         </div>
         <div class="field">
-          <div class="row"><label for="exhale">Exhale</label><span class="val" id="exhaleVal">4.0<small>s</small></span></div>
-          <input type="range" id="exhale" min="2" max="12" step="0.5" value="4" />
+          <div class="row"><label for="exhaleNum">Exhale</label>
+            <span class="stepper">
+              <button type="button" class="step-btn" data-id="exhale" data-step="-1" aria-label="Decrease exhale">&minus;</button>
+              <input type="number" class="step-input" id="exhaleNum" min="2" max="12" step="0.1" value="4.0" inputmode="decimal" aria-label="Exhale seconds" />
+              <small>s</small>
+              <button type="button" class="step-btn" data-id="exhale" data-step="1" aria-label="Increase exhale">+</button>
+            </span>
+          </div>
+          <input type="range" id="exhale" min="2" max="12" step="0.1" value="4" />
         </div>
         <div class="field">
-          <div class="row"><label for="holdIn">Hold after inhale</label><span class="val" id="holdInVal">0<small>s</small></span></div>
-          <input type="range" id="holdIn" min="0" max="10" step="0.5" value="0" />
+          <div class="row"><label for="holdInNum">Hold after inhale</label>
+            <span class="stepper">
+              <button type="button" class="step-btn" data-id="holdIn" data-step="-1" aria-label="Decrease hold after inhale">&minus;</button>
+              <input type="number" class="step-input" id="holdInNum" min="0" max="10" step="0.1" value="0.0" inputmode="decimal" aria-label="Hold after inhale seconds" />
+              <small>s</small>
+              <button type="button" class="step-btn" data-id="holdIn" data-step="1" aria-label="Increase hold after inhale">+</button>
+            </span>
+          </div>
+          <input type="range" id="holdIn" min="0" max="10" step="0.1" value="0" />
         </div>
         <div class="field">
-          <div class="row"><label for="holdOut">Hold after exhale</label><span class="val" id="holdOutVal">0<small>s</small></span></div>
-          <input type="range" id="holdOut" min="0" max="10" step="0.5" value="0" />
+          <div class="row"><label for="holdOutNum">Hold after exhale</label>
+            <span class="stepper">
+              <button type="button" class="step-btn" data-id="holdOut" data-step="-1" aria-label="Decrease hold after exhale">&minus;</button>
+              <input type="number" class="step-input" id="holdOutNum" min="0" max="10" step="0.1" value="0.0" inputmode="decimal" aria-label="Hold after exhale seconds" />
+              <small>s</small>
+              <button type="button" class="step-btn" data-id="holdOut" data-step="1" aria-label="Increase hold after exhale">+</button>
+            </span>
+          </div>
+          <input type="range" id="holdOut" min="0" max="10" step="0.1" value="0" />
         </div>
       </div>
 
@@ -755,28 +792,50 @@
   /* ---------------- Settings ---------------- */
   const sliders = ["breaths","pace","inhale","exhale","holdIn","holdOut","volume"].reduce((a,id)=>(a[id]=$(id),a),{});
 
+  // precise per-track timing: each track has a slider + a number input with
+  // stepper buttons (0.1s / 100ms steps, i.e. finer than the old 0.5s).
+  const TRACKS = ["inhale","exhale","holdIn","holdOut"];
+  const TRACK_BOUNDS = { inhale:[2,12], exhale:[2,12], holdIn:[0,10], holdOut:[0,10] };
+  const TRACK_STEP = 0.1;
+  const nums = TRACKS.reduce((a,id)=>(a[id]=$(id+"Num"),a),{});
+  const round1 = (v) => Math.round(v*10)/10;
+  function clampTrack(id, v) { const [lo,hi]=TRACK_BOUNDS[id]; return Math.min(hi, Math.max(lo, round1(v))); }
+
   function fmtVal() {
     $("breathsVal").textContent = sliders.breaths.value;
-    $("inhaleVal").innerHTML = parseFloat(sliders.inhale.value).toFixed(1) + "<small>s</small>";
-    $("exhaleVal").innerHTML = parseFloat(sliders.exhale.value).toFixed(1) + "<small>s</small>";
-    $("holdInVal").innerHTML = parseFloat(sliders.holdIn.value) + "<small>s</small>";
-    $("holdOutVal").innerHTML = parseFloat(sliders.holdOut.value) + "<small>s</small>";
+    // keep the number inputs in sync, but never clobber one being typed into
+    TRACKS.forEach((id) => { if (document.activeElement !== nums[id]) nums[id].value = parseFloat(sliders[id].value).toFixed(1); });
     const total = parseFloat(sliders.inhale.value)+parseFloat(sliders.exhale.value)+parseFloat(sliders.holdIn.value)+parseFloat(sliders.holdOut.value);
     $("paceVal").innerHTML = total.toFixed(total % 1 ? 1 : 0) + "<small>s / breath</small>";
+  }
+  // single entry point that keeps slider, number input, pace and storage in step
+  function setTrack(id, v) {
+    sliders[id].value = clampTrack(id, v);
+    const total = parseFloat(sliders.inhale.value)+parseFloat(sliders.exhale.value)+parseFloat(sliders.holdIn.value)+parseFloat(sliders.holdOut.value);
+    sliders.pace.value = Math.min(20, Math.max(4, Math.round(total)));
+    fmtVal(); updateEstimate(); saveSettings();
   }
   sliders.pace.addEventListener("input", () => {
     const target = parseFloat(sliders.pace.value) - parseFloat(sliders.holdIn.value) - parseFloat(sliders.holdOut.value);
     const curIn = parseFloat(sliders.inhale.value), curEx = parseFloat(sliders.exhale.value);
     const ratio = curIn / (curIn + curEx || 1);
-    const clamp = (v) => Math.min(12, Math.max(2, Math.round(v*2)/2));
+    const clamp = (v) => Math.min(12, Math.max(2, round1(v)));
     if (target >= 4) { sliders.inhale.value = clamp(target*ratio); sliders.exhale.value = clamp(target*(1-ratio)); }
     fmtVal(); updateEstimate(); saveSettings();
   });
-  ["inhale","exhale","holdIn","holdOut"].forEach((id) => {
-    sliders[id].addEventListener("input", () => {
-      const total = parseFloat(sliders.inhale.value)+parseFloat(sliders.exhale.value)+parseFloat(sliders.holdIn.value)+parseFloat(sliders.holdOut.value);
-      sliders.pace.value = Math.min(20, Math.max(4, Math.round(total)));
-      fmtVal(); updateEstimate(); saveSettings();
+  TRACKS.forEach((id) => {
+    sliders[id].addEventListener("input", () => setTrack(id, parseFloat(sliders[id].value)));
+    nums[id].addEventListener("input", () => { const v = parseFloat(nums[id].value); if (!isNaN(v)) setTrack(id, v); });
+    nums[id].addEventListener("change", () => {
+      const v = parseFloat(nums[id].value);
+      setTrack(id, isNaN(v) ? parseFloat(sliders[id].value) : v);
+      nums[id].value = parseFloat(sliders[id].value).toFixed(1);
+    });
+  });
+  document.querySelectorAll(".step-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.id;
+      setTrack(id, parseFloat(sliders[id].value) + parseFloat(btn.dataset.step) * TRACK_STEP);
     });
   });
   sliders.breaths.addEventListener("input", () => { fmtVal(); updateEstimate(); saveSettings(); });
