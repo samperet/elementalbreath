@@ -15,9 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Elemental Breathing" />
 <meta name="description" content="A guided breathing exercise through the five Sufi elements — Earth, Water, Fire, Air, and Ether." />
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+<link href="fonts.css" rel="stylesheet" />
 
 <style>
   @property --c1 { syntax: '<color>'; inherits: true; initial-value: #c9a14a; }
@@ -158,6 +156,24 @@
   input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.18); }
   input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #fff; border: none; }
 
+  /* advanced · per-element timing */
+  .adv { margin-top: 8px; border-top: 1px solid rgba(255,255,255,.08); }
+  .adv-summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; user-select: none; -webkit-tap-highlight-color: transparent; }
+  .adv-summary::-webkit-details-marker { display: none; }
+  .adv-summary .sec-label { margin-bottom: 0; }
+  .adv-caret { font-size: 11px; color: var(--muted); margin-top: 22px; transition: transform .25s; }
+  .adv[open] .adv-caret { transform: rotate(180deg); }
+  .adv-body { padding-top: 4px; }
+  .adv-toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
+  .adv-toggle-label { font-size: 13.5px; color: #d6dbe4; }
+  .per-el-timings { display: flex; flex-direction: column; gap: 12px; transition: opacity .3s; }
+  .per-el-timings.disabled { opacity: .4; pointer-events: none; }
+  .adv-el { border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 12px 14px; background: rgba(255,255,255,.02); }
+  .adv-el-name { font-family: var(--ui-serif); font-size: 17px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; }
+  .adv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; }
+  @media (max-width: 400px){ .adv-grid { grid-template-columns: 1fr; } }
+  .adv-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .adv-row > label { font-size: 12.5px; color: var(--muted); }
   .vol-wrap { display: flex; align-items: center; gap: 12px; transition: opacity .3s; }
   .vol-wrap svg { width: 18px; height: 18px; color: var(--muted); flex: 0 0 auto; }
 
@@ -447,6 +463,20 @@
           <input type="range" id="holdOut" min="0" max="10" step="0.1" value="0" />
         </div>
       </div>
+
+      <details class="adv">
+        <summary class="adv-summary"><span class="sec-label">Advanced &middot; per-element timing</span><span class="adv-caret" aria-hidden="true">▾</span></summary>
+        <div class="adv-body">
+          <div class="adv-toggle-row">
+            <span class="adv-toggle-label">Use a custom rhythm for each element</span>
+            <label class="sw">
+              <input type="checkbox" id="advToggle" />
+              <span class="track"></span><span class="knob"></span>
+            </label>
+          </div>
+          <div id="perElTimings" class="per-el-timings"></div>
+        </div>
+      </details>
 
       <div class="sec-label">Background music &amp; volume</div>
       <div class="vol-wrap" id="volWrap">
@@ -804,6 +834,10 @@
   const TRACKS = ["inhale","exhale","holdIn","holdOut"];
   const TRACK_BOUNDS = { inhale:[2,12], exhale:[2,12], holdIn:[0,10], holdOut:[0,10] };
   const TRACK_STEP = 0.1;
+  const TRACK_LABEL = { inhale:"Inhale", exhale:"Exhale", holdIn:"Hold in", holdOut:"Hold out" };
+  // advanced: per-element timing overrides (seconds), used when advancedOn is true
+  let advancedOn = false;
+  const perEl = {};
   const nums = TRACKS.reduce((a,id)=>(a[id]=$(id+"Num"),a),{});
   const round1 = (v) => Math.round(v*10)/10;
   function clampTrack(id, v) { const [lo,hi]=TRACK_BOUNDS[id]; return Math.min(hi, Math.max(lo, round1(v))); }
@@ -868,23 +902,104 @@
     sliders.holdIn.value = 0; sliders.holdOut.value = 0;
     sliders.pace.value = 8; sliders.volume.value = 60;
     audio.setVolume(0.6); setMusic(true);
+    advancedOn = false; $("advToggle").checked = false; $("perElTimings").classList.add("disabled");
+    seedPerEl(null); buildAdvanced();
     fmtVal(); updateEstimate(); saveSettings();
   }
   $("resetBtn").addEventListener("click", resetDefaults);
 
+  /* ---- advanced: per-element timing ---- */
+  function seedPerEl(saved) {
+    ELEMENTS.forEach((el) => {
+      const s = saved && saved[el.id];
+      perEl[el.id] = {
+        inhale:  s && s.inhale  != null ? +s.inhale  : parseFloat(sliders.inhale.value),
+        exhale:  s && s.exhale  != null ? +s.exhale  : parseFloat(sliders.exhale.value),
+        holdIn:  s && s.holdIn  != null ? +s.holdIn  : parseFloat(sliders.holdIn.value),
+        holdOut: s && s.holdOut != null ? +s.holdOut : parseFloat(sliders.holdOut.value),
+      };
+    });
+  }
+  function advStepper(elId, track, val) {
+    const [lo,hi] = TRACK_BOUNDS[track];
+    const wrap = document.createElement("span"); wrap.className = "stepper";
+    const mk = (dir, label) => { const btn=document.createElement("button"); btn.type="button"; btn.className="step-btn adv-step"; btn.dataset.el=elId; btn.dataset.track=track; btn.dataset.step=dir; btn.setAttribute("aria-label",label); btn.textContent = dir>0 ? "+" : "−"; return btn; };
+    const input = document.createElement("input");
+    input.type="number"; input.className="step-input adv-input"; input.id=`adv-${elId}-${track}`;
+    input.dataset.el=elId; input.dataset.track=track; input.min=lo; input.max=hi; input.step=0.1;
+    input.value=(+val).toFixed(1); input.inputMode="decimal";
+    const unit=document.createElement("small"); unit.textContent="s";
+    wrap.append(mk(-1,"decrease"), input, unit, mk(1,"increase"));
+    return wrap;
+  }
+  function buildAdvanced() {
+    const host = $("perElTimings"); host.innerHTML = "";
+    ELEMENTS.forEach((el) => {
+      const card = document.createElement("div"); card.className="adv-el";
+      const name = document.createElement("div"); name.className="adv-el-name"; name.textContent = el.name; name.style.color = el.glow;
+      card.appendChild(name);
+      const grid = document.createElement("div"); grid.className="adv-grid";
+      TRACKS.forEach((tr) => {
+        const row = document.createElement("div"); row.className="adv-row";
+        const lab = document.createElement("label"); lab.textContent = TRACK_LABEL[tr]; lab.setAttribute("for", `adv-${el.id}-${tr}`);
+        row.append(lab, advStepper(el.id, tr, perEl[el.id][tr]));
+        grid.appendChild(row);
+      });
+      card.appendChild(grid); host.appendChild(card);
+    });
+  }
+  function setAdvTrack(elId, track, v, fromInput) {
+    const [lo,hi] = TRACK_BOUNDS[track];
+    const nv = Math.min(hi, Math.max(lo, Math.round(v*10)/10));
+    if (!perEl[elId]) perEl[elId] = {};
+    perEl[elId][track] = nv;
+    const inp = $(`adv-${elId}-${track}`);
+    if (inp && !(fromInput && document.activeElement === inp)) inp.value = nv.toFixed(1);
+    updateEstimate(); saveSettings();
+  }
+  $("advToggle").addEventListener("change", (e) => {
+    advancedOn = e.target.checked;
+    $("perElTimings").classList.toggle("disabled", !advancedOn);
+    updateEstimate(); saveSettings();
+  });
+  $("perElTimings").addEventListener("click", (e) => {
+    const btn = e.target.closest(".adv-step"); if (!btn) return;
+    setAdvTrack(btn.dataset.el, btn.dataset.track, (perEl[btn.dataset.el][btn.dataset.track]||0) + parseFloat(btn.dataset.step)*TRACK_STEP);
+  });
+  $("perElTimings").addEventListener("input", (e) => {
+    const inp = e.target.closest(".adv-input"); if (!inp) return;
+    const v = parseFloat(inp.value); if (!isNaN(v)) setAdvTrack(inp.dataset.el, inp.dataset.track, v, true);
+  });
+  $("perElTimings").addEventListener("change", (e) => {
+    const inp = e.target.closest(".adv-input"); if (!inp) return;
+    const v = parseFloat(inp.value);
+    setAdvTrack(inp.dataset.el, inp.dataset.track, isNaN(v) ? (perEl[inp.dataset.el][inp.dataset.track]||0) : v);
+    inp.value = perEl[inp.dataset.el][inp.dataset.track].toFixed(1);
+  });
+
   function readConfig() {
+    const g = {
+      inhaleMs: parseFloat(sliders.inhale.value)*1000, exhaleMs: parseFloat(sliders.exhale.value)*1000,
+      holdInMs: parseFloat(sliders.holdIn.value)*1000, holdOutMs: parseFloat(sliders.holdOut.value)*1000,
+    };
+    const perMs = {};
+    ELEMENTS.forEach((el) => {
+      const t = perEl[el.id];
+      perMs[el.id] = t ? { inhaleMs:t.inhale*1000, exhaleMs:t.exhale*1000, holdInMs:t.holdIn*1000, holdOutMs:t.holdOut*1000 } : g;
+    });
     return {
       elements: ELEMENTS,
       breaths: parseInt(sliders.breaths.value,10),
-      inhaleMs: parseFloat(sliders.inhale.value)*1000, exhaleMs: parseFloat(sliders.exhale.value)*1000,
-      holdInMs: parseFloat(sliders.holdIn.value)*1000, holdOutMs: parseFloat(sliders.holdOut.value)*1000,
       sound: $("soundToggle").checked,
+      advanced: advancedOn, global: g, perMs,
     };
   }
+  function timingFor(cfg, el) { return (cfg.advanced && cfg.perMs[el.id]) ? cfg.perMs[el.id] : cfg.global; }
   function updateEstimate() {
     const cfg = readConfig();
-    const per = cfg.breaths*(cfg.inhaleMs+cfg.exhaleMs+cfg.holdInMs+cfg.holdOutMs)/1000;
-    const total = Math.round(per * cfg.elements.length);
+    let secs = 0;
+    cfg.elements.forEach((el) => { const t = timingFor(cfg, el); secs += cfg.breaths*(t.inhaleMs+t.exhaleMs+t.holdInMs+t.holdOutMs)/1000; });
+    const total = Math.round(secs);
     const m = Math.floor(total/60), s = total%60;
     const time = `${m}:${String(s).padStart(2,"0")}`;
     $("estTime").textContent = time;
@@ -900,6 +1015,7 @@
         breaths: sliders.breaths.value, inhale: sliders.inhale.value, exhale: sliders.exhale.value,
         holdIn: sliders.holdIn.value, holdOut: sliders.holdOut.value, volume: sliders.volume.value,
         sound: $("soundToggle").checked,
+        advanced: advancedOn, perEl,
       }));
     } catch (e) {}
   }
@@ -916,10 +1032,17 @@
       sliders.pace.value = Math.min(20, Math.max(4, Math.round(total)));
       audio.volume = sliders.volume.value/100;
       setMusic(s.sound !== false);
+      advancedOn = !!s.advanced;
+      seedPerEl(s.perEl);
     } else {
       audio.volume = sliders.volume.value/100;
       setMusic(true);
+      advancedOn = false;
+      seedPerEl(null);
     }
+    $("advToggle").checked = advancedOn;
+    $("perElTimings").classList.toggle("disabled", !advancedOn);
+    buildAdvanced();
     fmtVal(); updateEstimate();
   }
 
@@ -999,16 +1122,17 @@
     $("orbIcon").innerHTML = ICONS[el.id]; orb.style.transform = `scale(${MIN})`; resetBg();
     const inSub  = methodText(el.inhale);
     const outSub = methodText(el.exhale);
+    const tm = timingFor(cfg, el);  // global rhythm, or this element's own when advanced
     for (let b=0; b<cfg.breaths; b++) {
       $("breathCount").textContent = `Breath ${b+1} of ${cfg.breaths}`;
       setPhase("Breathe In", inSub, el.refined); setDhikr(DHIKR_IN);
-      pulseBg(BG_FULL, BG_OP_FULL, cfg.inhaleMs, EASE);
-      if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MAX})`}], cfg.inhaleMs, EASE))) return interrupt || "stop";
-      if (cfg.holdInMs > 0) { setPhase("Hold","full and still"); setDhikr(null); if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MAX})`}], cfg.holdInMs))) return interrupt || "stop"; }
+      pulseBg(BG_FULL, BG_OP_FULL, tm.inhaleMs, EASE);
+      if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MAX})`}], tm.inhaleMs, EASE))) return interrupt || "stop";
+      if (tm.holdInMs > 0) { setPhase("Hold","full and still"); setDhikr(null); if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MAX})`}], tm.holdInMs))) return interrupt || "stop"; }
       setPhase("Breathe Out", outSub, el.refined); setDhikr(DHIKR_OUT);
-      pulseBg(BG_REST, BG_OP_REST, cfg.exhaleMs, EASE);
-      if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MIN})`}], cfg.exhaleMs, EASE))) return interrupt || "stop";
-      if (cfg.holdOutMs > 0) { setPhase("Hold","empty and open"); setDhikr(null); if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MIN})`}], cfg.holdOutMs))) return interrupt || "stop"; }
+      pulseBg(BG_REST, BG_OP_REST, tm.exhaleMs, EASE);
+      if (!(await runAnim(orb, [{transform:`scale(${MAX})`},{transform:`scale(${MIN})`}], tm.exhaleMs, EASE))) return interrupt || "stop";
+      if (tm.holdOutMs > 0) { setPhase("Hold","empty and open"); setDhikr(null); if (!(await runAnim(orb, [{transform:`scale(${MIN})`},{transform:`scale(${MIN})`}], tm.holdOutMs))) return interrupt || "stop"; }
     }
     return "done";
   }

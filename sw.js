@@ -1,9 +1,10 @@
 /* Service worker — offline-first app shell for Elemental Breathing */
-const CACHE = "elemental-breath-v19";
+const CACHE = "elemental-breath-v20";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
+  "./fonts.css",
   "./background.mp3",
   "./manuscript.jpg",
   "./sufiheart.png",
@@ -13,6 +14,19 @@ const ASSETS = [
   "./icon-maskable-512.png",
   "./apple-touch-icon.png",
   "./favicon-32.png",
+  "./fonts/amiri-400-normal-arabic.woff2",
+  "./fonts/amiri-400-normal-latin.woff2",
+  "./fonts/amiri-700-normal-arabic.woff2",
+  "./fonts/amiri-700-normal-latin.woff2",
+  "./fonts/cormorant-garamond-400-normal-latin.woff2",
+  "./fonts/cormorant-garamond-500-normal-latin.woff2",
+  "./fonts/cormorant-garamond-600-normal-latin.woff2",
+  "./fonts/cormorant-garamond-400-italic-latin.woff2",
+  "./fonts/cormorant-garamond-500-italic-latin.woff2",
+  "./fonts/cormorant-garamond-600-italic-latin.woff2",
+  "./fonts/eb-garamond-400-normal-latin.woff2",
+  "./fonts/eb-garamond-500-normal-latin.woff2",
+  "./fonts/eb-garamond-400-italic-latin.woff2",
 ];
 
 self.addEventListener("install", (e) => {
