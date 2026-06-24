@@ -333,8 +333,39 @@
   .wz-sum-stat { font-family: var(--ui-serif); font-style: italic; font-size: 18px; color: var(--muted); }
   .wz-sum-stat b { color: var(--fg); font-style: normal; }
   .wz-sum-btns { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; width: min(280px, 78%); }
+  .wz-sum-btns[hidden] { display: none; }
   .wz-sum-btns .btn-ghost { width: 100%; }
-  #wazifa.summary .wz-card, #wazifa.summary .wz-card-behind, #wazifa.summary .wz-actions, #wazifa.summary .wz-progress { display: none; }
+  #wazifa.summary .wz-card, #wazifa.summary .wz-card-behind, #wazifa.summary .wz-actions, #wazifa.summary .wz-learn-actions, #wazifa.summary .wz-progress { display: none; }
+  /* ---- Learn mode: grade buttons ---- */
+  .wz-learn-actions { display: none; gap: 12px; justify-content: center; }
+  #wazifa.learn:not(.summary):not(.hub) .wz-learn-actions { display: flex; }
+  #wazifa.learn .wz-actions { display: none; }
+  .wz-grade { min-width: 92px; padding: 12px 16px; border-radius: 40px; cursor: pointer; border: 1.5px solid; background: rgba(255,255,255,.04);
+    font-family: var(--ui-serif); font-size: 16px; letter-spacing: .02em; color: var(--fg); transition: transform .15s, background .2s; }
+  .wz-grade:hover { transform: translateY(-2px); background: rgba(255,255,255,.09); }
+  .wz-grade:active { transform: scale(.94); }
+  .wz-grade.miss { color: #ff6b6b; border-color: rgba(255,107,107,.5); }
+  .wz-grade.hard { color: #e6c66b; border-color: rgba(230,198,107,.5); }
+  .wz-grade.good { color: #4cc483; border-color: rgba(76,196,131,.5); }
+  /* ---- Learn hub / dashboard ---- */
+  .wz-hub { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(16px, 3vh, 26px); text-align: center; padding: 24px; }
+  .wz-hub[hidden] { display: none; }
+  #wazifa.hub .wz-card, #wazifa.hub .wz-card-behind, #wazifa.hub .wz-actions, #wazifa.hub .wz-learn-actions, #wazifa.hub .wz-progress { display: none; }
+  .wz-ring-wrap { position: relative; width: min(180px, 46vw); aspect-ratio: 1; }
+  .wz-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .wz-ring-bg { fill: none; stroke: rgba(255,255,255,.10); stroke-width: 7; }
+  .wz-ring-fg { fill: none; stroke: var(--glow); stroke-width: 7; stroke-linecap: round; transition: stroke-dashoffset .8s cubic-bezier(.4,.1,.3,1); }
+  .wz-ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .wz-ring-center b { font-family: var(--ui-serif); font-size: clamp(34px, 9vw, 46px); font-weight: 500; line-height: 1; }
+  .wz-ring-center span { font-family: var(--ui-serif); font-style: italic; font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .wz-chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 340px; }
+  .wz-chip { min-width: 66px; padding: 10px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.03); display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .wz-chip b { font-family: var(--ui-serif); font-size: 22px; font-weight: 500; color: var(--fg); font-variant-numeric: tabular-nums; }
+  .wz-chip span { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .wz-hub-note { font-family: var(--ui-serif); font-style: italic; font-size: 15px; color: var(--muted); max-width: 36ch; }
+  .wz-hub-btns { display: flex; flex-direction: column; gap: 12px; width: min(280px, 78%); }
+  .wz-hub-btns .btn-ghost { width: 100%; }
+  .wz-reset { background: none; border: none; cursor: pointer; color: var(--muted); font-family: var(--ui-serif); font-style: italic; font-size: 14px; text-decoration: underline; text-underline-offset: 3px; }
 
   @media (prefers-reduced-motion: reduce) {
     .screen { transition: opacity .2s; }
@@ -590,17 +621,42 @@
           <div class="wz-face wz-back">
             <div class="wz-tr-sm" id="wzTrBack"></div>
             <div class="wz-en" id="wzEn"></div>
-            <div class="wz-swipe-hint">swipe right · known&nbsp;&nbsp;&nbsp;left · review</div>
+            <div class="wz-swipe-hint" id="wzSwipeHint">swipe right · known&nbsp;&nbsp;&nbsp;left · review</div>
           </div>
         </div>
       </div>
       <div class="wz-summary" id="wzSummary" hidden>
-        <div class="wz-sum-title">Deck complete</div>
+        <div class="wz-sum-title" id="wzSumTitle">Deck complete</div>
         <div class="wz-sum-stat" id="wzSumStat"></div>
-        <div class="wz-sum-btns">
+        <div class="wz-sum-btns" id="wzSumBtnsPractice">
           <button class="btn-ghost accent" id="wzReviewMissed">Review missed</button>
           <button class="btn-ghost" id="wzRestart">Shuffle all 99</button>
         </div>
+        <div class="wz-sum-btns" id="wzSumBtnsLearn" hidden>
+          <button class="btn-ghost accent" id="wzLearnMore">Keep going</button>
+          <button class="btn-ghost" id="wzLearnDone">Back to today</button>
+        </div>
+      </div>
+      <div class="wz-hub" id="wzHub" hidden>
+        <div class="wz-ring-wrap">
+          <svg class="wz-ring" viewBox="0 0 120 120">
+            <circle class="wz-ring-bg" cx="60" cy="60" r="52"></circle>
+            <circle class="wz-ring-fg" id="wzRing" cx="60" cy="60" r="52"></circle>
+          </svg>
+          <div class="wz-ring-center"><b id="wzHubLearned">0</b><span>of 99 learned</span></div>
+        </div>
+        <div class="wz-chips">
+          <div class="wz-chip"><b id="wzHubDue">0</b><span>Due</span></div>
+          <div class="wz-chip"><b id="wzHubNew">0</b><span>New</span></div>
+          <div class="wz-chip"><b id="wzHubMastered">0</b><span>Mastered</span></div>
+          <div class="wz-chip"><b id="wzHubStreak">0</b><span>Streak</span></div>
+        </div>
+        <div class="wz-hub-note" id="wzHubNote"></div>
+        <div class="wz-hub-btns">
+          <button class="btn-ghost accent" id="wzStartLearn">Start learning</button>
+          <button class="btn-ghost" id="wzStartPractice">Free practice</button>
+        </div>
+        <button class="wz-reset" id="wzResetProgress">Reset progress</button>
       </div>
     </div>
     <div class="wz-actions">
@@ -610,6 +666,11 @@
       <button class="wz-btn known" id="wzKnownBtn" title="Known (→)" aria-label="Mark as known">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
       </button>
+    </div>
+    <div class="wz-learn-actions">
+      <button class="wz-grade miss" id="wzGradeMiss">Missed</button>
+      <button class="wz-grade hard" id="wzGradeHard">Hard</button>
+      <button class="wz-grade good" id="wzGradeGood">Got it</button>
     </div>
   </section>
 </div>
@@ -1194,6 +1255,118 @@
   const wzCard = $("wzCard"), wzSection = $("wazifa"), wzFlipEl = wzCard.querySelector(".wz-flip");
   const wzCardBehind = $("wzCardBehind");
   let wzDeck = [], wzIndex = 0, wzKnown = 0, wzReview = [], wzFlipped = false, wzAnimating = false;
+  let wzMode = "practice";
+
+  /* ===================== Spaced-repetition learning engine =====================
+     Leitner boxes with expanding (SuperMemo / Pimsleur graduated) intervals, an
+     adaptive new-card allowance that grows with accuracy, and within-session
+     relearning of missed cards. Per-card state persists in localStorage. */
+  WAZIFAS.forEach((w, i) => { w.i = i; });
+  const WZ_STORE = "elemental-wazifa-srs";
+  const WZ_BOX_MIN = [0, 10, 1440, 4320, 10080, 21600, 43200]; // minutes by box (0=learning … 6=mastered)
+  const WZ_MASTER_BOX = 5;   // box >= this counts as moved into long-term memory
+  const WZ_MAX_SESSION = 18; // cap reviews pulled per session (new cards added on top)
+  let wzSRS = { v: 1, cards: {}, newPerDay: 4, streak: { count: 0, last: null } };
+  // per-session counters
+  let wzSessTotal = 0, wzSessGood = 0, wzReq = new Map();
+
+  function wzLoadSRS() {
+    try { const s = JSON.parse(localStorage.getItem(WZ_STORE)); if (s && s.cards) {
+      wzSRS = Object.assign({ v:1, cards:{}, newPerDay:4, streak:{count:0,last:null} }, s);
+      if (!wzSRS.streak) wzSRS.streak = { count:0, last:null };
+    } } catch (e) {}
+  }
+  function wzSaveSRS() { try { localStorage.setItem(WZ_STORE, JSON.stringify(wzSRS)); } catch (e) {} }
+
+  function wzGrade(i, grade) { // 0 missed · 1 hard · 2 good
+    const now = Date.now();
+    const c = wzSRS.cards[i] || { box:0, due:now, seen:0, correct:0, streak:0, lapses:0 };
+    c.seen++;
+    if (grade === 0) { c.box = 0; c.streak = 0; c.lapses++; c.due = now + 60000; }
+    else if (grade === 1) { c.correct++; c.due = now + WZ_BOX_MIN[Math.max(1, c.box)] * 60000; }
+    else { c.correct++; c.streak++; c.box = Math.min(WZ_BOX_MIN.length - 1, (c.box || 0) + 1); c.due = now + WZ_BOX_MIN[c.box] * 60000; }
+    wzSRS.cards[i] = c;
+  }
+  function wzCountDueNew() {
+    const now = Date.now(), cards = wzSRS.cards;
+    const intro = Object.keys(cards).map(Number);
+    const due = intro.filter((i) => cards[i].due <= now).length;
+    let newAvail = 0;
+    for (let i = 0; i < WAZIFAS.length; i++) { if (!cards[i]) newAvail++; }
+    const newCount = Math.min(wzSRS.newPerDay, newAvail);
+    const mastered = intro.filter((i) => cards[i].box >= WZ_MASTER_BOX).length;
+    return { introduced: intro.length, due, newCount, newAvail, mastered, session: Math.min(WZ_MAX_SESSION, due) + newCount };
+  }
+  function wzNextDueMs() {
+    const now = Date.now(), cards = wzSRS.cards;
+    let next = Infinity;
+    Object.keys(cards).forEach((i) => { if (cards[i].due > now) next = Math.min(next, cards[i].due); });
+    return next === Infinity ? null : next - now;
+  }
+  function wzBuildLearn() {
+    const now = Date.now(), cards = wzSRS.cards;
+    const dueIdx = Object.keys(cards).map(Number).filter((i) => cards[i].due <= now)
+      .sort((a, b) => cards[a].due - cards[b].due).slice(0, WZ_MAX_SESSION);
+    const newIdx = [];
+    for (let i = 0; i < WAZIFAS.length && newIdx.length < wzSRS.newPerDay; i++) { if (!cards[i]) newIdx.push(i); }
+    // interleave: a fresh name roughly every 3 reviews so new and old mix
+    const out = []; let di = 0, ni = 0, since = 0;
+    while (di < dueIdx.length || ni < newIdx.length) {
+      if (ni < newIdx.length && (since >= 3 || di >= dueIdx.length)) { out.push(newIdx[ni++]); since = 0; }
+      else if (di < dueIdx.length) { out.push(dueIdx[di++]); since++; }
+      else { out.push(newIdx[ni++]); }
+    }
+    return out.map((i) => WAZIFAS[i]);
+  }
+  function wzTouchStreak() {
+    const d = new Date(); const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    const st = wzSRS.streak;
+    if (st.last === key) return;
+    const y = new Date(Date.now() - 86400000); const ykey = `${y.getFullYear()}-${y.getMonth()}-${y.getDate()}`;
+    st.count = (st.last === ykey) ? st.count + 1 : 1;
+    st.last = key; wzSaveSRS();
+  }
+  function wzFmtDuration(ms) {
+    if (ms == null) return "—";
+    const h = Math.round(ms / 3600000);
+    if (h < 1) return `${Math.max(1, Math.round(ms / 60000))} min`;
+    if (h < 24) return `${h}h`;
+    return `${Math.round(h / 24)}d`;
+  }
+  function wzSetRing(frac) {
+    const C = 2 * Math.PI * 52, el = $("wzRing");
+    el.style.strokeDasharray = `${C}`;
+    el.style.strokeDashoffset = `${C * (1 - Math.max(0, Math.min(1, frac)))}`;
+  }
+  function wzRenderHub() {
+    const c = wzCountDueNew();
+    $("wzHubLearned").textContent = c.introduced;
+    $("wzHubDue").textContent = c.due;
+    $("wzHubNew").textContent = c.newCount;
+    $("wzHubMastered").textContent = c.mastered;
+    $("wzHubStreak").textContent = wzSRS.streak.count;
+    wzSetRing(c.introduced / WAZIFAS.length);
+    const startBtn = $("wzStartLearn");
+    if (c.session > 0) {
+      startBtn.disabled = false; startBtn.textContent = "Start learning";
+      $("wzHubNote").textContent = c.introduced === 0
+        ? "Begin with a small set of names. As you recall them, more are added — and learned names return just before you'd forget them."
+        : `${c.session} cards ready · ${c.due} review${c.due===1?"":"s"} + ${c.newCount} new.`;
+    } else {
+      startBtn.disabled = true; startBtn.textContent = "All caught up";
+      const nd = wzNextDueMs();
+      $("wzHubNote").textContent = c.introduced >= WAZIFAS.length && nd == null
+        ? "All 99 names mastered — beautiful work."
+        : `You're caught up. Next review in ${wzFmtDuration(nd)}.`;
+    }
+  }
+  function wzShowHub() {
+    wzMode = "practice";
+    wzSection.classList.remove("summary", "learn"); wzSection.classList.add("hub");
+    $("wzSummary").hidden = true; $("wzHub").hidden = false;
+    $("wzProgress").textContent = "";
+    wzRenderHub();
+  }
 
   function wzShuffle(a) {
     a = a.slice();
@@ -1215,6 +1388,9 @@
     wzCard.classList.remove("flipped");
     void wzFlipEl.offsetWidth; // force reflow to commit the instant reset
     wzFlipEl.style.transition = "";
+    $("wzSwipeHint").innerHTML = wzMode === "learn"
+      ? "missed · hard · got it"
+      : "swipe right · known&nbsp;&nbsp;&nbsp;left · review";
     wzClearBadges();
   }
   // The behind card is a live preview of the next card, so it is already
@@ -1227,28 +1403,76 @@
     $("wzArB").textContent = nxt.ar;
     $("wzTrB").textContent = nxt.tr;
   }
-  function startWazifa(deck) {
-    wzDeck = (deck && deck.length) ? deck : wzShuffle(WAZIFAS);
-    wzIndex = 0; wzKnown = 0; wzReview = []; wzAnimating = false;
-    wzSection.classList.remove("summary"); $("wzSummary").hidden = true;
+  function wzResetCardChrome() {
+    wzAnimating = false;
+    wzSection.classList.remove("summary", "hub");
+    $("wzSummary").hidden = true; $("wzHub").hidden = true;
     wzCard.style.transition = "none"; wzCard.style.transform = ""; wzCard.style.opacity = "1";
     wzCardBehind.classList.remove("rising"); wzCardBehind.style.transition = "";
+  }
+  function startWazifa(deck) {
+    wzMode = "practice"; wzSection.classList.remove("learn");
+    wzDeck = (deck && deck.length) ? deck : wzShuffle(WAZIFAS);
+    wzIndex = 0; wzKnown = 0; wzReview = [];
+    wzResetCardChrome();
+    wzRender();
+    wzRenderBehind();
+  }
+  function wzStartLearn() {
+    const c = wzCountDueNew();
+    if (c.session === 0) { wzRenderHub(); return; }
+    wzMode = "learn"; wzTouchStreak();
+    wzDeck = wzBuildLearn();
+    wzIndex = 0; wzSessTotal = 0; wzSessGood = 0; wzReq = new Map();
+    wzSection.classList.add("learn");
+    wzResetCardChrome();
     wzRender();
     wzRenderBehind();
   }
   function wzFlip() { if (wzAnimating) return; wzFlipped = !wzFlipped; wzCard.classList.toggle("flipped", wzFlipped); }
   function wzSummaryShow() {
     wzSection.classList.add("summary"); $("wzSummary").hidden = false;
+    $("wzSumBtnsLearn").hidden = true; $("wzSumBtnsPractice").hidden = false;
+    $("wzSumTitle").textContent = "Deck complete";
     $("wzSumStat").innerHTML = `You knew <b>${wzKnown}</b> of <b>${wzDeck.length}</b>`;
     const missed = wzReview.length;
     const rm = $("wzReviewMissed");
     rm.textContent = `Review missed (${missed})`;
     rm.style.display = missed ? "" : "none";
   }
-  function wzDecide(correct) {
+  function wzLearnSummaryShow() {
+    // adaptive pacing: grow the new-card pack when recall is strong, shrink when weak
+    if (wzSessTotal >= 5) {
+      const acc = wzSessGood / wzSessTotal;
+      if (acc >= 0.8) wzSRS.newPerDay = Math.min(10, wzSRS.newPerDay + 1);
+      else if (acc < 0.5) wzSRS.newPerDay = Math.max(3, wzSRS.newPerDay - 1);
+    }
+    wzSaveSRS();
+    wzSection.classList.add("summary"); $("wzSummary").hidden = false;
+    $("wzSumBtnsPractice").hidden = true; $("wzSumBtnsLearn").hidden = false;
+    $("wzSumTitle").textContent = "Session complete";
+    const acc = wzSessTotal ? Math.round(100 * wzSessGood / wzSessTotal) : 0;
+    $("wzSumStat").innerHTML = `<b>${wzSessGood}</b> of <b>${wzSessTotal}</b> recalled &middot; <b>${acc}%</b>`;
+    const more = wzCountDueNew();
+    $("wzLearnMore").style.display = more.session > 0 ? "" : "none";
+  }
+  function wzApplyAnswer(grade) {
+    const card = wzDeck[wzIndex];
+    if (wzMode === "learn") {
+      wzGrade(card.i, grade);
+      wzSessTotal++; if (grade === 2) wzSessGood++;
+      if (grade === 0) { // relearn within this session, a few cards later (capped)
+        const att = wzReq.get(card.i) || 0;
+        if (att < 2) { wzReq.set(card.i, att + 1); wzDeck.splice(Math.min(wzDeck.length, wzIndex + 3), 0, card); }
+      }
+    } else {
+      if (grade === 2) wzKnown++; else wzReview.push(card);
+    }
+  }
+  function wzDecide(grade) { // 0 missed · 1 hard · 2 good
     if (wzAnimating) return; wzAnimating = true;
-    const dir = correct ? 1 : -1;
-    if (correct) wzKnown++; else wzReview.push(wzDeck[wzIndex]);
+    const dir = grade === 0 ? -1 : 1;
+    wzApplyAnswer(grade);
     wzCard.style.transition = "transform .4s ease, opacity .4s ease";
     wzCard.style.transform = `translate(${dir * 150}%, -8%) rotate(${dir * 20}deg)`;
     wzCard.style.opacity = "0";
@@ -1258,7 +1482,9 @@
     setTimeout(() => {
       wzIndex++;
       if (wzIndex >= wzDeck.length) {
-        wzAnimating = false; wzCardBehind.classList.remove("rising"); wzSummaryShow(); return;
+        wzAnimating = false; wzCardBehind.classList.remove("rising");
+        (wzMode === "learn") ? wzLearnSummaryShow() : wzSummaryShow();
+        return;
       }
       // Promote: snap the top card (now the next card) into place over the
       // risen preview — same content, same spot, so the swap is seamless.
@@ -1298,27 +1524,40 @@
     const dx = e.clientX - dragX0;
     if (!dragMoved) { wzCard.style.transition = "transform .2s ease"; wzCard.style.transform = ""; wzFlip(); return; }
     const threshold = dragW * 0.32;
-    if (dx > threshold) wzDecide(true);
-    else if (dx < -threshold) wzDecide(false);
+    if (dx > threshold) wzDecide(2);
+    else if (dx < -threshold) wzDecide(0);
     else { wzCard.style.transition = "transform .25s ease"; wzCard.style.transform = ""; wzClearBadges(); }
   }
   wzCard.addEventListener("pointerup", wzEndDrag);
   wzCard.addEventListener("pointercancel", () => { if (dragOn) { dragOn = false; wzCard.style.transition = "transform .25s ease"; wzCard.style.transform = ""; wzClearBadges(); } });
-  $("wzKnownBtn").addEventListener("click", () => wzDecide(true));
-  $("wzReviewBtn").addEventListener("click", () => wzDecide(false));
+  $("wzKnownBtn").addEventListener("click", () => wzDecide(2));
+  $("wzReviewBtn").addEventListener("click", () => wzDecide(0));
+  $("wzGradeGood").addEventListener("click", () => wzDecide(2));
+  $("wzGradeHard").addEventListener("click", () => wzDecide(1));
+  $("wzGradeMiss").addEventListener("click", () => wzDecide(0));
   $("wzReviewMissed").addEventListener("click", () => startWazifa(wzShuffle(wzReview)));
   $("wzRestart").addEventListener("click", () => startWazifa());
+  $("wzStartLearn").addEventListener("click", wzStartLearn);
+  $("wzStartPractice").addEventListener("click", () => startWazifa());
+  $("wzLearnMore").addEventListener("click", wzStartLearn);
+  $("wzLearnDone").addEventListener("click", wzShowHub);
+  $("wzResetProgress").addEventListener("click", () => {
+    if (!window.confirm("Reset all learning progress for the 99 names?")) return;
+    wzSRS = { v:1, cards:{}, newPerDay:4, streak:{count:0,last:null} };
+    wzSaveSRS(); wzRenderHub();
+  });
   document.addEventListener("keydown", (e) => {
-    if (!wzSection.classList.contains("active") || wzSection.classList.contains("summary")) return;
-    if (e.code === "ArrowRight") wzDecide(true);
-    else if (e.code === "ArrowLeft") wzDecide(false);
+    if (!wzSection.classList.contains("active") || wzSection.classList.contains("summary") || wzSection.classList.contains("hub")) return;
+    if (e.code === "ArrowRight") wzDecide(2);
+    else if (e.code === "ArrowLeft") wzDecide(0);
+    else if (e.code === "ArrowDown" && wzMode === "learn") wzDecide(1);
     else if (e.code === "Space" || e.code === "Enter") { e.preventDefault(); wzFlip(); }
   });
 
   /* ---------------- Navigation ---------------- */
   function goMenu() { show("menu"); applyMenuTheme(); }
   $("toBreathingBtn").addEventListener("click", () => { show("home"); applyHomeTheme(); });
-  $("toWazifaBtn").addEventListener("click", () => { show("wazifa"); applyMenuTheme(); startWazifa(); });
+  $("toWazifaBtn").addEventListener("click", () => { show("wazifa"); applyMenuTheme(); wzShowHub(); });
   $("homeBackBtn").addEventListener("click", goMenu);
   $("wzBackBtn").addEventListener("click", goMenu);
   $("gearBtn").addEventListener("click", () => show("settings"));
@@ -1326,11 +1565,12 @@
   $("doneSettingsBtn").addEventListener("click", () => { show("home"); applyHomeTheme(); });
   $("startBtn").addEventListener("click", () => runSession(readConfig()));
   $("againBtn").addEventListener("click", () => runSession(readConfig()));
-  $("toWazifaFromDoneBtn").addEventListener("click", () => { audio.stop(); show("wazifa"); applyMenuTheme(); startWazifa(); });
+  $("toWazifaFromDoneBtn").addEventListener("click", () => { audio.stop(); show("wazifa"); applyMenuTheme(); wzShowHub(); });
   $("homeBtn").addEventListener("click", () => { audio.stop(); show("home"); applyHomeTheme(); });
 
   /* ---------------- Init ---------------- */
   loadSettings();
+  wzLoadSRS();
   applyMenuTheme();
 
   /* ---------------- PWA service worker ---------------- */
