@@ -20,7 +20,8 @@ Each element has its own traditional breath method (5 breaths each) and a color 
 
 ## Features
 
-- **Minimal home** with a gold Sufi winged-heart emblem, a large *Begin* button, and an always-visible **music toggle**
+- **Minimal home** with a gold Sufi winged-heart emblem, a large *Begin* button, an always-visible **music toggle**, and a **How to practice** instructions diagram of every element's breath directions
+- **Navigate the session** freely — advance to the next element or step back to the previous one with the on-screen buttons, the `→` / `←` keys, or a left / right **swipe**
 - **Settings page** (⚙) for the rhythm: breaths per element (default 5, range 1–20), breath length, independent inhale / exhale durations, optional holds, and volume — with a **reset to defaults**
 - **Classic alchemical element symbols** (clean vectors) on a glowing orb that breathes — expanding on the inhale, contracting on the exhale — while the symbol itself holds a constant size, themed to each element's color
 - **Illuminated design** — elegant serif type (Cormorant Garamond / EB Garamond) over a subtle Ottoman-Qur'an manuscript backdrop
@@ -43,13 +44,16 @@ Each element has its own traditional breath method (5 breaths each) and a color 
 
 ## Controls
 
-| Action | Key | Button |
-| --- | --- | --- |
-| Pause / resume | `Space` | center |
-| Next element | `→` | right |
-| End session | `Esc` | left |
+| Action | Key | Button | Gesture |
+| --- | --- | --- | --- |
+| Pause / resume | `Space` | center | — |
+| Next element | `→` | ⏭ | swipe left |
+| Previous element | `←` | ⏮ | swipe right |
+| End session | `Esc` | ◼ (left) | — |
 
 > Music starts only after you press **Begin** — browsers block audio until a user interaction.
+
+A **How to practice** link on the breathing home opens an instructions diagram showing each element's breath directions (in / out through the nose or mouth) at a glance.
 
 ## Run it
 
